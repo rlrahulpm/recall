@@ -1997,33 +1997,27 @@
                             <!-- Tags will be populated here -->
                         </div>
                     </div>
-                    <div class="modal-actions">
-                        <button class="archive-btn" id="modalArchiveBtn">
-                            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/>
-                                <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/>
-                            </svg>
-                            Archive
-                        </button>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <button class="share-btn">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-                                </svg>
-                                Share
-                            </button>
+
+                    <div class="enhanced-modal-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Created</div>
+                            <div class="meta-value" id="modalDate"></div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Added By</div>
+                            <div class="meta-value" id="modalUser"></div>
                         </div>
                     </div>
                 </div>
+
                 <div class="modal-right">
                     <div class="modal-notes-section">
                         <div class="modal-section-header">
                             <h3 class="modal-section-title">
                                 <svg class="section-icon" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-                                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h8a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
                                 </svg>
-                                Notes
+                                Notes & Insights
                             </h3>
                             <button class="enhanced-add-btn" id="addNoteBtn">
                                 <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
@@ -2032,184 +2026,1207 @@
                                 Add Note
                             </button>
                         </div>
-                        <div class="notes-list" id="notesList">
+                        <div class="notes-list" id="modalNotesList">
                             <!-- Notes will be populated here -->
                         </div>
                     </div>
+
                     <div class="modal-comments-section">
                         <div class="modal-section-header">
                             <h3 class="modal-section-title">
                                 <svg class="section-icon" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.837 8.837 0 01-4.41-1.232l-2.643.881a1 1 0 01-1.25-1.25l.88-2.644A8.838 8.838 0 012 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM4.41 15.768a6.963 6.963 0 004.348 1.232 6.963 6.963 0 004.348-1.232l.001-.002.002-.002.002-.002a6.962 6.962 0 002.04-3.766 6.962 6.962 0 00-2.04-3.766 6.962 6.962 0 00-3.766-2.04 6.962 6.962 0 00-3.766 2.04 6.962 6.962 0 00-2.04 3.766 6.962 6.962 0 002.04 3.766l.002.002.002.002.001.002z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
                                 </svg>
                                 Comments
                             </h3>
-                            <span class="comment-count" id="commentCount">3</span>
+                            <span class="comment-count" id="commentCount">0</span>
                         </div>
+                        
                         <div class="comment-input-section">
-                            <textarea class="comment-input" placeholder="Add a comment..."></textarea>
+                            <textarea class="comment-input" id="commentInput" placeholder="Add a comment..." rows="3"></textarea>
                             <div class="comment-actions">
-                                <button class="comment-submit-btn">
+                                <button class="comment-submit-btn" id="submitCommentBtn">
                                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
                                     </svg>
                                     Post Comment
                                 </button>
                             </div>
                         </div>
+                        
                         <div class="comments-list" id="commentsList">
-                            <!-- Comments will be populated here -->
+                            <!-- Sample comments for demonstration -->
+                            <div class="comment-item">
+                                <div class="comment-avatar">
+                                    <svg width="32" height="32" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="comment-content">
+                                    <div class="comment-header">
+                                        <span class="comment-author">Utsav Chen</span>
+                                        <span class="comment-time">2 hours ago</span>
+                                    </div>
+                                    <div class="comment-text">This is really helpful! I encountered a similar issue last week. Thanks for documenting this.</div>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar">
+                                    <svg width="32" height="32" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="comment-content">
+                                    <div class="comment-header">
+                                        <span class="comment-author">Mike Johnson</span>
+                                        <span class="comment-time">5 hours ago</span>
+                                    </div>
+                                    <div class="comment-text">Great find! Have you tried the alternative approach using npm ci instead?</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+            <div class="enhanced-related-section">
+                <h3 class="enhanced-related-title">
+                    <svg class="related-icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" />
+                    </svg>
+                    Related Memories
+                </h3>
+                <div class="related-cards" id="relatedCards">
+                    <!-- Related cards will be populated here -->
+                    <div class="related-card">
+                        <div class="related-card-image">[Screenshot]</div>
+                        <div class="related-card-date">2 days ago</div>
+                        <div class="related-card-notes">Similar debugging session with React components...</div>
+                    </div>
+                    <div class="related-card">
+                        <div class="related-card-image">[Screenshot]</div>
+                        <div class="related-card-date">1 week ago</div>
+                        <div class="related-card-notes">API integration with similar error patterns...</div>
+                    </div>
+                    <div class="related-card">
+                        <div class="related-card-image">[Screenshot]</div>
+                        <div class="related-card-date">2 weeks ago</div>
+                        <div class="related-card-notes">Console debugging techniques for state management...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="share-btn" id="shareBtn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
+                    </svg>
+                    Share
+                    <div class="share-dropdown" id="shareDropdown">
+                        <div class="share-option" data-type="link">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"/>
+                            </svg>
+                            Copy Link
+                        </div>
+                        <div class="share-option" data-type="email">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                            </svg>
+                            Email
+                        </div>
+                        <div class="share-option" data-type="slack">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            Slack
+                        </div>
+                    </div>
+                </button>
+                <button class="archive-btn" id="archiveBtn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/>
+                        <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    Archive
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Mock data
-    const recalls = [
-        { id: 1, date: 'July 30, 2025', user: 'Rahul', notes: 'Terminal command failed during npm install. Error occurred due to network timeout.', tags: ['cli', 'npm', 'error'], favorite: false, archived: false },
-        { id: 2, date: 'July 29, 2025', user: 'Utsav', notes: 'User engagement analytics dashboard showing interesting patterns in user behavior.', tags: ['data', 'analytics', 'ux'], favorite: true, archived: false },
-        { id: 3, date: 'July 28, 2025', user: 'Rahul', notes: 'React component state management pattern. Need to remember this approach for handling complex state.', tags: ['react', 'javascript', 'code'], favorite: false, archived: false },
-        { id: 4, date: 'July 27, 2025', user: 'Deep', notes: 'Design inspiration for landing page. Clean layout with great color palette and typography choices.', tags: ['design', 'ui', 'inspiration'], favorite: false, archived: false },
-        { id: 5, date: 'July 26, 2025', user: 'Utsav', notes: 'Database optimization techniques for better performance in production environments.', tags: ['database', 'optimization', 'performance'], favorite: false, archived: false },
-        { id: 6, date: 'July 25, 2025', user: 'Rahul', notes: 'API documentation best practices and tools for maintaining clear, comprehensive endpoints.', tags: ['api', 'documentation', 'tools'], favorite: true, archived: false },
-    ];
+    <!-- Capture Modal -->
+    <div class="modal capture-modal" id="captureModal">
+        <div class="modal-content">
+            <div class="processing-overlay" id="processingOverlay" style="display: none;">
+                <div class="processing-spinner"></div>
+                <div class="processing-text">
+                    <div>Capturing screenshot...</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">AI is analyzing the content</div>
+                </div>
+            </div>
 
-    // DOM elements
-    const cardsGrid = document.querySelector('.cards-grid');
-    const cardModal = document.getElementById('cardModal');
-    const modalClose = document.getElementById('modalClose');
-    const modalTitle = cardModal.querySelector('.modal-title');
-    const modalImage = document.getElementById('modalImage');
-    const modalTags = document.getElementById('modalTags');
-    const modalFavoriteBtn = document.getElementById('modalFavoriteBtn');
-    const modalArchiveBtn = document.getElementById('modalArchiveBtn');
-    let activeCardId = null;
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title">New Capture</h2>
+                    <div class="ai-badge">
+                        <svg class="ai-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        AI Enhanced
+                    </div>
+                </div>
+                <button class="modal-close" id="captureModalClose">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="modal-left">
+                    <div class="modal-image" id="captureImage">
+                        <canvas id="screenshotCanvas" style="width: 100%; height: 100%; object-fit: contain; border-radius: 12px;"></canvas>
+                    </div>
+                    
+                    <div class="modal-tags-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3>Tags</h3>
+                            <button class="add-note-btn" id="addCaptureTagBtn">+ Add Tag</button>
+                        </div>
+                        <div class="ai-suggestions" id="aiTagSuggestions">
+                            <div class="ai-suggestions-header">
+                                <svg class="ai-icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                <span class="ai-suggestions-title">AI Suggestions</span>
+                            </div>
+                            <div class="ai-suggestions-text" id="aiTagSuggestionsText">
+                                Analyzing image content for relevant tags...
+                            </div>
+                        </div>
+                        <div class="tag-cloud" id="captureTags">
+                            <!-- Tags will be populated here -->
+                        </div>
+                    </div>
+                </div>
 
-    // Render cards
-    function renderCards(filteredRecalls) {
-        cardsGrid.innerHTML = '';
-        filteredRecalls.forEach(recall => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.dataset.id = recall.id;
-            if (recall.archived) {
-                card.style.display = 'none';
+                <div class="modal-right">
+                    <div class="modal-notes-section">
+                        <div class="modal-notes-header">
+                            <h3 class="modal-notes-title">Notes</h3>
+                            <button class="add-note-btn" id="addCaptureNoteBtn">+ Add Note</button>
+                        </div>
+                        <div class="ai-suggestions" id="aiNoteSuggestions">
+                            <div class="ai-suggestions-header">
+                                <svg class="ai-icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                <span class="ai-suggestions-title">AI Analysis</span>
+                            </div>
+                            <div class="ai-suggestions-text" id="aiNoteSuggestionsText">
+                                Processing screenshot content to generate relevant notes...
+                            </div>
+                        </div>
+                        <div class="notes-list" id="captureNotesList">
+                            <!-- Notes will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="modal-meta">
+                        <span id="captureDate" class="date"></span>
+                        <span id="captureUser" class="user">Added by You</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="capture-actions">
+                <button class="cancel-btn" id="cancelCaptureBtn">Cancel</button>
+                <button class="save-btn" id="saveToRecallBtn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    Save to Recall
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample data
+            const sampleNotes = [
+                { text: "Terminal command failed during npm install", type: "system" },
+                { text: "Error occurred due to network timeout", type: "system" },
+                { text: "Resolved by clearing npm cache", type: "manual" },
+                { text: "Remember to use --force flag next time", type: "manual" },
+                { text: "Check network connection before running", type: "manual" },
+                { text: "Documented solution in team wiki", type: "manual" }
+            ];
+
+            const relatedCardsData = [
+                { date: "July 26, 2025", notes: "Similar npm error with different package", tags: ["npm", "error", "cli"] },
+                { date: "July 25, 2025", notes: "Package installation troubleshooting guide", tags: ["npm", "guide", "cli"] },
+                { date: "July 24, 2025", notes: "Network configuration for npm registry", tags: ["npm", "network", "config"] }
+            ];
+
+            let currentNotes = [...sampleNotes];
+            let currentTags = [];
+            let captureNotes = [];
+            let captureTags = [];
+
+            // DOM elements
+            const modal = document.getElementById('cardModal');
+            const captureModal = document.getElementById('captureModal');
+            const processingOverlay = document.getElementById('processingOverlay');
+            const modalClose = document.getElementById('modalClose');
+            const captureModalClose = document.getElementById('captureModalClose');
+            const modalDate = document.getElementById('modalDate');
+            const modalUser = document.getElementById('modalUser');
+            const modalNotesList = document.getElementById('modalNotesList');
+            const modalTags = document.getElementById('modalTags');
+            const addNoteBtn = document.getElementById('addNoteBtn');
+            const addTagBtn = document.getElementById('addTagBtn');
+            const relatedCards = document.getElementById('relatedCards');
+            const captureBtn = document.getElementById('captureBtn');
+            
+            // Capture modal elements
+            const screenshotCanvas = document.getElementById('screenshotCanvas');
+            const captureImage = document.getElementById('captureImage');
+            const captureNotesList = document.getElementById('captureNotesList');
+            const captureTagsEl = document.getElementById('captureTags');
+            const captureDate = document.getElementById('captureDate');
+            const addCaptureNoteBtn = document.getElementById('addCaptureNoteBtn');
+            const addCaptureTagBtn = document.getElementById('addCaptureTagBtn');
+            const cancelCaptureBtn = document.getElementById('cancelCaptureBtn');
+            const saveToRecallBtn = document.getElementById('saveToRecallBtn');
+            const aiTagSuggestionsText = document.getElementById('aiTagSuggestionsText');
+            const aiNoteSuggestionsText = document.getElementById('aiNoteSuggestionsText');
+
+            // Screenshot capture function
+            async function captureScreenshot() {
+                try {
+                    captureModal.classList.add('show');
+                    processingOverlay.style.display = 'flex';
+                    
+                    // Set current date
+                    captureDate.textContent = new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+
+                    // Simulate screenshot capture
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Create a mock screenshot
+                    const canvas = screenshotCanvas;
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 800;
+                    canvas.height = 600;
+                    
+                    // Create gradient background
+                    const gradient = ctx.createLinearGradient(0, 0, 800, 600);
+                    gradient.addColorStop(0, '#667eea');
+                    gradient.addColorStop(1, '#764ba2');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, 800, 600);
+                    
+                    // Add some mock content
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 32px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Screenshot Captured', 400, 250);
+                    
+                    ctx.font = '18px Arial';
+                    ctx.fillText('CogniSpace AI is analyzing this content...', 400, 300);
+                    
+                    // Add some mock UI elements
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                    ctx.fillRect(50, 100, 700, 80);
+                    ctx.fillRect(50, 200, 300, 200);
+                    ctx.fillRect(400, 200, 350, 200);
+                    
+                    // Simulate AI processing
+                    processingOverlay.querySelector('.processing-text').innerHTML = `
+                        <div>Analyzing screenshot content...</div>
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">AI is extracting insights</div>
+                    `;
+
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    // Hide processing overlay
+                    processingOverlay.style.display = 'none';
+                    
+                    // Update AI suggestions
+                    aiTagSuggestionsText.innerHTML = `
+                        <strong>Suggested tags:</strong> development, terminal, npm, package-manager, debugging, command-line, node.js
+                    `;
+                    
+                    aiNoteSuggestionsText.innerHTML = `
+                        <strong>Key insights:</strong><br>
+                        • Terminal window showing npm installation process<br>
+                        • Package manager command execution in progress<br>
+                        • Development environment setup visible<br>
+                        • Consider documenting successful installation steps
+                    `;
+                    
+                    // Add default AI-generated notes with variety
+                    const aiNoteOptions = [
+                        [
+                            { text: "Screenshot captured from application interface", type: "system" },
+                            { text: "UI elements and layout structure analyzed", type: "system" },
+                            { text: "Detected form inputs and interactive components", type: "system" },
+                            { text: "Consider documenting user interaction patterns", type: "manual" }
+                        ],
+                        [
+                            { text: "Web page content captured and processed", type: "system" },
+                            { text: "Text content and visual hierarchy identified", type: "system" },
+                            { text: "Color scheme and design patterns noted", type: "system" },
+                            { text: "Good reference for design inspiration", type: "manual" }
+                        ],
+                        [
+                            { text: "Application state captured at specific moment", type: "system" },
+                            { text: "Data visualization elements detected", type: "system" },
+                            { text: "User workflow context preserved", type: "system" },
+                            { text: "Useful for troubleshooting and documentation", type: "manual" }
+                        ],
+                        [
+                            { text: "Interface screenshot successfully processed", type: "system" },
+                            { text: "Navigation elements and menu structure mapped", type: "system" },
+                            { text: "Content organization patterns identified", type: "system" },
+                            { text: "Remember to add specific context about the task", type: "manual" }
+                        ]
+                    ];
+                    
+                    // Randomly select one set of AI notes
+                    const randomIndex = Math.floor(Math.random() * aiNoteOptions.length);
+                    captureNotes = [...aiNoteOptions[randomIndex]];
+                    
+                    // Add varied AI-suggested tags
+                    const aiTagOptions = [
+                        ['screenshot', 'ui', 'development', 'interface'],
+                        ['capture', 'design', 'layout', 'web'],
+                        ['app', 'workflow', 'user-experience', 'documentation'],
+                        ['interface', 'analysis', 'reference', 'visual']
+                    ];
+                    
+                    // Use the same random index for consistency
+                    captureTags = [...aiTagOptions[randomIndex]];
+                    
+                    updateCaptureNotesList();
+                    updateCaptureTagsList();
+                    
+                } catch (error) {
+                    console.error('Screenshot capture failed:', error);
+                    processingOverlay.style.display = 'none';
+                    alert('Screenshot capture failed. Please try again.');
+                }
             }
 
-            card.innerHTML = `
-                <div class="card-select-checkbox" style="display: none;">
-                    <input type="checkbox" class="card-checkbox" data-card-id="${recall.id}">
-                </div>
-                <button class="favorite-btn ${recall.favorite ? 'active' : ''}">
-                    <svg class="favorite-icon" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                </button>
-                <div class="card-image">[Screenshot]</div>
-                <div class="card-content">
-                    <div class="card-meta">
-                        <span class="date">${recall.date}</span>
-                        <span class="user">Added by ${recall.user}</span>
+            function updateCaptureNotesList() {
+                captureNotesList.innerHTML = captureNotes.map((note, index) => `
+                    <div class="note-item">
+                        <svg class="note-icon ${note.type}" viewBox="0 0 20 20" fill="currentColor">
+                            ${note.type === 'system' ? 
+                                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />' :
+                                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />'
+                            }
+                        </svg>
+                        <span class="note-text">${note.text}</span>
+                        <div class="note-actions">
+                            <button class="note-action" onclick="removeCaptureNote(${index})">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-notes">${recall.notes}</div>
-                    <div class="card-tags">
-                        ${recall.tags.map(tag => `<span class="card-tag">${tag}</span>`).join('')}
-                    </div>
-                </div>
-            `;
+                `).join('');
+            }
 
-            // Card click to open modal
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('.favorite-btn') || e.target.closest('.card-checkbox')) return;
-                openModal(recall.id);
+            function updateCaptureTagsList() {
+                captureTagsEl.innerHTML = captureTags.map((tag, index) => `
+                    <span class="tag-item active removable-tag" onclick="removeCaptureTag(${index})">
+                        ${tag}
+                        <svg class="tag-remove-icon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                `).join('');
+            }
+
+            window.removeCaptureNote = function(index) {
+                captureNotes.splice(index, 1);
+                updateCaptureNotesList();
+            };
+
+            window.removeCaptureTag = function(index) {
+                captureTags.splice(index, 1);
+                updateCaptureTagsList();
+            };
+
+            // Modal functions
+            function updateNotesList() {
+                modalNotesList.innerHTML = currentNotes.map((note, index) => `
+                    <div class="note-item">
+                        <svg class="note-icon ${note.type}" viewBox="0 0 20 20" fill="currentColor">
+                            ${note.type === 'system' ? 
+                                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />' :
+                                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />'
+                            }
+                        </svg>
+                        <span class="note-text">${note.text}</span>
+                        <div class="note-actions">
+                            <button class="note-action" onclick="removeNote(${index})">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function updateTagsList() {
+                modalTags.innerHTML = currentTags.map((tag, index) => `
+                    <span class="tag-item active removable-tag" onclick="removeTag(${index})">
+                        ${tag}
+                        <svg class="tag-remove-icon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                `).join('');
+            }
+
+            function updateRelatedCards() {
+                relatedCards.innerHTML = relatedCardsData.map(card => `
+                    <div class="related-card">
+                        <div class="related-card-image">[Screenshot]</div>
+                        <div class="related-card-date">${card.date}</div>
+                        <div class="related-card-notes">${card.notes}</div>
+                        <div class="card-tags">
+                            ${card.tags.map(tag => `<span class="card-tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Global functions for removing notes and tags
+            window.removeNote = function(index) {
+                currentNotes.splice(index, 1);
+                updateNotesList();
+            };
+
+            window.removeTag = function(index) {
+                currentTags.splice(index, 1);
+                updateTagsList();
+            };
+
+            // Event listeners
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const cardId = this.getAttribute('data-id');
+                    
+                    // Populate modal with card data
+                    modalDate.textContent = this.querySelector('.date').textContent;
+                    modalUser.textContent = this.querySelector('.user').textContent;
+                    
+                    // Reset modal data
+                    currentNotes = [...sampleNotes];
+                    currentTags = ['cli', 'npm', 'error'];
+                    
+                    updateNotesList();
+                    updateTagsList();
+                    updateRelatedCards();
+                    
+                    modal.classList.add('show');
+                });
             });
 
-            // Favorite button click
-            const favoriteBtn = card.querySelector('.favorite-btn');
-            favoriteBtn.addEventListener('click', (e) => {
+            // Modal close events
+            modalClose.addEventListener('click', function() {
+                modal.classList.remove('show');
+            });
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+
+            // Capture modal close events
+            captureModalClose.addEventListener('click', function() {
+                captureModal.classList.remove('show');
+            });
+
+            captureModal.addEventListener('click', function(e) {
+                if (e.target === captureModal) {
+                    captureModal.classList.remove('show');
+                }
+            });
+
+            // Add note functionality
+            addNoteBtn.addEventListener('click', function() {
+                const noteText = prompt('Enter a new note:');
+                if (noteText) {
+                    currentNotes.push({ text: noteText, type: 'manual' });
+                    updateNotesList();
+                }
+            });
+
+            // Add tag functionality
+            addTagBtn.addEventListener('click', function() {
+                const tagText = prompt('Enter a new tag:');
+                if (tagText) {
+                    currentTags.push(tagText);
+                    updateTagsList();
+                }
+            });
+
+            // Capture modal functionality
+            addCaptureNoteBtn.addEventListener('click', function() {
+                const noteText = prompt('Enter a new note:');
+                if (noteText) {
+                    captureNotes.push({ text: noteText, type: 'manual' });
+                    updateCaptureNotesList();
+                }
+            });
+
+            addCaptureTagBtn.addEventListener('click', function() {
+                const tagText = prompt('Enter a new tag:');
+                if (tagText) {
+                    captureTags.push(tagText);
+                    updateCaptureTagsList();
+                }
+            });
+
+            cancelCaptureBtn.addEventListener('click', function() {
+                captureModal.classList.remove('show');
+            });
+
+            saveToRecallBtn.addEventListener('click', function() {
+                alert('Saved to Recall! (This is a demo)');
+                captureModal.classList.remove('show');
+            });
+
+
+            // Modal favorite button
+            const modalFavoriteBtn = document.getElementById('modalFavoriteBtn');
+            modalFavoriteBtn.addEventListener('click', function() {
+                this.classList.toggle('active');
+                updateAllFilterCounts(); // Update counts when modal favorite changes
+            });
+
+            // Share functionality
+            const shareBtn = document.getElementById('shareBtn');
+            const shareDropdown = document.getElementById('shareDropdown');
+
+            shareBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                toggleFavorite(recall.id);
+                shareDropdown.classList.toggle('show');
             });
 
-            cardsGrid.appendChild(card);
+            document.addEventListener('click', function() {
+                shareDropdown.classList.remove('show');
+            });
+
+            document.querySelectorAll('.share-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const shareType = this.getAttribute('data-type');
+                    
+                    switch(shareType) {
+                        case 'link':
+                            navigator.clipboard.writeText(window.location.href).then(() => {
+                                alert('Link copied to clipboard!');
+                            });
+                            break;
+                        case 'email':
+                            window.location.href = `mailto:?subject=Check out this recall&body=${encodeURIComponent(window.location.href)}`;
+                            break;
+                        case 'slack':
+                            alert('Slack integration would be implemented here');
+                            break;
+                    }
+                    
+                    shareDropdown.classList.remove('show');
+                });
+            });
+
+            // Comments functionality
+            const commentInput = document.getElementById('commentInput');
+            const submitCommentBtn = document.getElementById('submitCommentBtn');
+            const commentsList = document.getElementById('commentsList');
+            const commentCount = document.getElementById('commentCount');
+
+            let commentsData = [
+                {
+                    author: 'Utsav Chen',
+                    text: 'This is really helpful! I encountered a similar issue last week. Thanks for documenting this.',
+                    time: '2 hours ago'
+                },
+                {
+                    author: 'Mike Johnson', 
+                    text: 'Great find! Have you tried the alternative approach using npm ci instead?',
+                    time: '5 hours ago'
+                }
+            ];
+
+            function updateCommentsList() {
+                commentsList.innerHTML = commentsData.map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-avatar">
+                            <svg width="32" height="32" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <span class="comment-author">${comment.author}</span>
+                                <span class="comment-time">${comment.time}</span>
+                            </div>
+                            <div class="comment-text">${comment.text}</div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                commentCount.textContent = commentsData.length;
+            }
+
+            submitCommentBtn.addEventListener('click', function() {
+                const commentText = commentInput.value.trim();
+                if (commentText) {
+                    commentsData.unshift({
+                        author: 'You',
+                        text: commentText,
+                        time: 'just now'
+                    });
+                    
+                    commentInput.value = '';
+                    updateCommentsList();
+                }
+            });
+
+            commentInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    submitCommentBtn.click();
+                }
+            });
+
+            // Initialize comments
+            updateCommentsList();
+
+            // Archive button
+            document.getElementById('archiveBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to archive this recall?')) {
+                    alert('Recall archived! (This is a demo)');
+                    modal.classList.remove('show');
+                }
+            });
+
+            // Update recall count
+            function updateRecallCount() {
+                const recallCountElement = document.getElementById('recallCount');
+                const cards = document.querySelectorAll('.card');
+                const count = cards.length;
+                
+                if (recallCountElement) {
+                    recallCountElement.textContent = `${count} Recall${count !== 1 ? 's' : ''}`;
+                }
+            }
+
+            // Capture button
+            captureBtn.addEventListener('click', captureScreenshot);
+
+            // Global filter state
+            let currentFilters = {
+                library: 'all', // all, favourites, archive
+                dateRange: 'all', // all, today, week, month, quarter, custom
+                user: 'all',
+                tags: [] // array of selected tags
+            };
+
+            // Filter handlers
+            document.querySelectorAll('.filter-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const parent = item.parentElement;
+                    
+                    // Handle different filter types
+                    if (item.classList.contains('user-filter-item')) {
+                        // User filter
+                        parent.querySelectorAll('.filter-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        currentFilters.user = item.getAttribute('data-user');
+                    } else if (parent.parentElement.querySelector('.filter-title').textContent.trim() === 'Library') {
+                        // Library filter (All Recalls, Favourites, Archive)
+                        parent.querySelectorAll('.filter-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        
+                        // Get the filter text from the first span (not including the count)
+                        const filterSpan = item.querySelector('span:first-child');
+                        const filterText = filterSpan ? filterSpan.textContent.trim().toLowerCase() : item.textContent.trim().toLowerCase();
+                        
+                        if (filterText === 'all recalls') {
+                            currentFilters.library = 'all';
+                        } else if (filterText === 'favourites') {
+                            currentFilters.library = 'favourites';
+                        } else if (filterText === 'archive') {
+                            currentFilters.library = 'archive';
+                        }
+                    }
+                    
+                    // Apply all filters
+                    applyAllFilters();
+                });
+            });
+
+            // Date range filter handlers
+            document.querySelectorAll('input[name="dateRange"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    currentFilters.dateRange = this.value;
+                    
+                    // Show/hide custom date picker
+                    const customDatePicker = document.getElementById('customDatePicker');
+                    if (this.value === 'custom') {
+                        customDatePicker.style.display = 'block';
+                    } else {
+                        customDatePicker.style.display = 'none';
+                        applyAllFilters();
+                    }
+                });
+            });
+
+            // Custom date range apply button
+            const applyCustomDateBtn = document.getElementById('applyCustomDate');
+            if (applyCustomDateBtn) {
+                applyCustomDateBtn.addEventListener('click', function() {
+                    const fromDate = document.getElementById('fromDate').value;
+                    const toDate = document.getElementById('toDate').value;
+                    
+                    if (fromDate && toDate) {
+                        currentFilters.customFromDate = fromDate;
+                        currentFilters.customToDate = toDate;
+                        applyAllFilters();
+                    } else {
+                        alert('Please select both dates');
+                    }
+                });
+            }
+
+            // Tag filter handlers
+            document.querySelectorAll('.tag-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (!item.classList.contains('removable-tag')) { // Don't handle removable tags
+                        const tagText = item.textContent.trim();
+                        item.classList.toggle('active');
+                        
+                        if (item.classList.contains('active')) {
+                            if (!currentFilters.tags.includes(tagText)) {
+                                currentFilters.tags.push(tagText);
+                            }
+                        } else {
+                            currentFilters.tags = currentFilters.tags.filter(tag => tag !== tagText);
+                        }
+                        
+                        applyAllFilters();
+                    }
+                });
+            });
+
+            // Main filtering function that applies all filters
+            function applyAllFilters() {
+                const cards = document.querySelectorAll('.card');
+                
+                cards.forEach(card => {
+                    let shouldShow = true;
+                    
+                    // Library filter (favourites/archive)
+                    if (currentFilters.library === 'favourites') {
+                        const favoriteBtn = card.querySelector('.favorite-btn');
+                        shouldShow = shouldShow && favoriteBtn && favoriteBtn.classList.contains('active');
+                    } else if (currentFilters.library === 'archive') {
+                        // Check if card is archived (has archived badge or opacity styling)
+                        const isArchived = card.querySelector('.archived-badge') || 
+                                          card.style.opacity === '0.5';
+                        shouldShow = shouldShow && isArchived;
+                    } else if (currentFilters.library === 'all') {
+                        // For "All Recalls", exclude archived items
+                        const isArchived = card.querySelector('.archived-badge') || 
+                                          card.style.opacity === '0.5';
+                        shouldShow = shouldShow && !isArchived;
+                    }
+                    
+                    // Date range filter
+                    if (currentFilters.dateRange !== 'all') {
+                        const cardDateElement = card.querySelector('.date');
+                        if (cardDateElement) {
+                            const cardDate = new Date(cardDateElement.textContent);
+                            const today = new Date();
+                            
+                            switch (currentFilters.dateRange) {
+                                case 'today':
+                                    shouldShow = shouldShow && isSameDay(cardDate, today);
+                                    break;
+                                case 'week':
+                                    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                                    shouldShow = shouldShow && cardDate >= weekAgo;
+                                    break;
+                                case 'month':
+                                    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                                    shouldShow = shouldShow && cardDate >= monthAgo;
+                                    break;
+                                case 'quarter':
+                                    const quarterAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+                                    shouldShow = shouldShow && cardDate >= quarterAgo;
+                                    break;
+                                case 'custom':
+                                    if (currentFilters.customFromDate && currentFilters.customToDate) {
+                                        const fromDate = new Date(currentFilters.customFromDate);
+                                        const toDate = new Date(currentFilters.customToDate);
+                                        toDate.setHours(23, 59, 59, 999); // Include the entire end date
+                                        shouldShow = shouldShow && cardDate >= fromDate && cardDate <= toDate;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    
+                    // User filter
+                    if (currentFilters.user !== 'all') {
+                        const userElement = card.querySelector('.user');
+                        const cardUser = userElement ? userElement.textContent.replace('Added by ', '') : '';
+                        shouldShow = shouldShow && cardUser === currentFilters.user;
+                    }
+                    
+                    // Tags filter
+                    if (currentFilters.tags.length > 0) {
+                        const cardTags = Array.from(card.querySelectorAll('.card-tag')).map(tag => tag.textContent.trim());
+                        const hasAllSelectedTags = currentFilters.tags.every(selectedTag => 
+                            cardTags.includes(selectedTag)
+                        );
+                        shouldShow = shouldShow && hasAllSelectedTags;
+                    }
+                    
+                    // Show/hide card
+                    card.style.display = shouldShow ? 'block' : 'none';
+                });
+                
+                updateRecallCountForFilter();
+            }
+
+            // Helper function to check if two dates are the same day
+            function isSameDay(date1, date2) {
+                return date1.getDate() === date2.getDate() &&
+                       date1.getMonth() === date2.getMonth() &&
+                       date1.getFullYear() === date2.getFullYear();
+            }
+
+            // Update recall count for filtered results
+            function updateRecallCountForFilter() {
+                const visibleCards = Array.from(document.querySelectorAll('.card')).filter(card => 
+                    !card.style.display || card.style.display !== 'none'
+                );
+                const count = visibleCards.length;
+                
+                const recallCountElement = document.getElementById('recallCount');
+                if (recallCountElement) {
+                    recallCountElement.textContent = `${count} Recall${count !== 1 ? 's' : ''}`;
+                }
+            }
+
+            // Update all filter counts dynamically
+            function updateAllFilterCounts() {
+                const allCards = document.querySelectorAll('.card');
+                
+                // Library filter counts
+                let allRecallsCount = 0;
+                let favouritesCount = 0;
+                let archiveCount = 0;
+                
+                // User filter counts
+                let rahulCount = 0;
+                let utsavCount = 0;
+                let deepCount = 0;
+                
+                allCards.forEach(card => {
+                    const isArchived = card.querySelector('.archived-badge') || card.style.opacity === '0.5';
+                    const isFavorited = card.querySelector('.favorite-btn') && card.querySelector('.favorite-btn').classList.contains('active');
+                    const userElement = card.querySelector('.user');
+                    const cardUser = userElement ? userElement.textContent.replace('Added by ', '') : '';
+                    
+                    // Count for library filters
+                    if (isArchived) {
+                        archiveCount++;
+                    } else {
+                        allRecallsCount++; // Non-archived items
+                    }
+                    
+                    if (isFavorited && !isArchived) {
+                        favouritesCount++; // Only count non-archived favorites
+                    }
+                    
+                    // Count for user filters
+                    switch (cardUser) {
+                        case 'Rahul':
+                            if (!isArchived) rahulCount++;
+                            break;
+                        case 'Utsav':
+                            if (!isArchived) utsavCount++;
+                            break;
+                        case 'Deep':
+                            if (!isArchived) deepCount++;
+                            break;
+                    }
+                });
+                
+                // Update library filter counts
+                const allRecallsCountEl = document.getElementById('allRecallsCount');
+                const favouritesCountEl = document.getElementById('favouritesCount');
+                const archiveCountEl = document.getElementById('archiveCount');
+                
+                if (allRecallsCountEl) allRecallsCountEl.textContent = allRecallsCount;
+                if (favouritesCountEl) favouritesCountEl.textContent = favouritesCount;
+                if (archiveCountEl) archiveCountEl.textContent = archiveCount;
+                
+                // Update user filter counts
+                const rahulCountEl = document.getElementById('rahulCount');
+                const utsavCountEl = document.getElementById('utsavCount');
+                const deepCountEl = document.getElementById('deepCount');
+                
+                if (rahulCountEl) rahulCountEl.textContent = rahulCount;
+                if (utsavCountEl) utsavCountEl.textContent = utsavCount;
+                if (deepCountEl) deepCountEl.textContent = deepCount;
+            }
+
+
+            // Favorite button handlers
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    btn.classList.toggle('active');
+                    updateAllFilterCounts(); // Update counts when favorites change
+                });
+            });
+
+            // Update count on page load
+            updateRecallCount();
+            updateAllFilterCounts();
+
+            // Bulk Selection Functionality
+            let bulkSelectionMode = false;
+            let selectedCards = new Set();
+
+            const bulkToggleBtn = document.getElementById('selectToggleBtn');
+            const bulkToolbar = document.getElementById('bulkActionsToolbar');
+            const bulkSelectedCount = document.getElementById('selectedCount');
+            const bulkSelectAllBtn = document.getElementById('selectAllBtn');
+            const bulkDeselectAllBtn = document.getElementById('deselectAllBtn');
+            const bulkFavoriteBtn = document.getElementById('bulkFavoriteBtn');
+            const bulkArchiveBtn = document.getElementById('bulkArchiveBtn');
+            const cardCheckboxes = document.querySelectorAll('.card-checkbox');
+            const cardSelectCheckboxes = document.querySelectorAll('.card-select-checkbox');
+            const cards = document.querySelectorAll('.card');
+
+            // Toggle bulk selection mode
+            if (bulkToggleBtn) {
+                bulkToggleBtn.addEventListener('click', function() {
+                    bulkSelectionMode = !bulkSelectionMode;
+                    
+                    if (bulkSelectionMode) {
+                        // Enter selection mode
+                        this.textContent = 'Cancel';
+                        this.classList.add('active');
+                        if (bulkToolbar) bulkToolbar.classList.add('show');
+                        
+                        // Show all checkboxes
+                        cardSelectCheckboxes.forEach(checkbox => {
+                            checkbox.style.display = 'block';
+                        });
+                    } else {
+                        // Exit selection mode
+                        this.textContent = 'Select';
+                        this.classList.remove('active');
+                        if (bulkToolbar) bulkToolbar.classList.remove('show');
+                        
+                        // Hide all checkboxes and clear selections
+                        cardSelectCheckboxes.forEach(checkbox => {
+                            checkbox.style.display = 'none';
+                        });
+                        
+                        // Clear all selections
+                        selectedCards.clear();
+                        cardCheckboxes.forEach(checkbox => {
+                            checkbox.checked = false;
+                        });
+                        
+                        // Remove selected styling from cards
+                        cards.forEach(card => {
+                            card.classList.remove('selected');
+                        });
+                        
+                        updateBulkSelectionUI();
+                    }
+                });
+            }
+
+            // Handle individual card checkbox changes
+            cardCheckboxes.forEach(checkbox => {
+                // Prevent checkbox clicks from triggering card modal
+                checkbox.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                checkbox.addEventListener('change', function(e) {
+                    e.stopPropagation();
+                    const cardId = this.getAttribute('data-card-id');
+                    const card = document.querySelector(`[data-id="${cardId}"]`);
+                    
+                    if (this.checked) {
+                        selectedCards.add(cardId);
+                        card.classList.add('selected');
+                    } else {
+                        selectedCards.delete(cardId);
+                        card.classList.remove('selected');
+                    }
+                    
+                    updateBulkSelectionUI();
+                });
+            });
+
+            // Also prevent clicks on the checkbox container from bubbling
+            cardSelectCheckboxes.forEach(checkboxContainer => {
+                checkboxContainer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            // Select all functionality
+            if (bulkSelectAllBtn) {
+                bulkSelectAllBtn.addEventListener('click', function() {
+                    cardCheckboxes.forEach(checkbox => {
+                        if (!checkbox.checked) {
+                            checkbox.checked = true;
+                            const cardId = checkbox.getAttribute('data-card-id');
+                            const card = document.querySelector(`[data-id="${cardId}"]`);
+                            selectedCards.add(cardId);
+                            card.classList.add('selected');
+                        }
+                    });
+                    updateBulkSelectionUI();
+                });
+            }
+
+            // Deselect all functionality
+            if (bulkDeselectAllBtn) {
+                bulkDeselectAllBtn.addEventListener('click', function() {
+                    cardCheckboxes.forEach(checkbox => {
+                        if (checkbox.checked) {
+                            checkbox.checked = false;
+                            const cardId = checkbox.getAttribute('data-card-id');
+                            const card = document.querySelector(`[data-id="${cardId}"]`);
+                            selectedCards.delete(cardId);
+                            card.classList.remove('selected');
+                        }
+                    });
+                    updateBulkSelectionUI();
+                });
+            }
+
+            // Add to favorites functionality
+            if (bulkFavoriteBtn) {
+                bulkFavoriteBtn.addEventListener('click', function() {
+                    if (selectedCards.size > 0) {
+                        selectedCards.forEach(cardId => {
+                            const card = document.querySelector(`[data-id="${cardId}"]`);
+                            const favoriteBtn = card.querySelector('.favorite-btn');
+                            if (favoriteBtn && !favoriteBtn.classList.contains('active')) {
+                                favoriteBtn.classList.add('active');
+                            }
+                        });
+                        
+                        // Show success message
+                        alert(`Added ${selectedCards.size} item(s) to favorites`);
+                        
+                        // Exit selection mode
+                        bulkToggleBtn.click();
+                        
+                        // Update filter counts after adding to favorites
+                        updateAllFilterCounts();
+                    }
+                });
+            }
+
+            // Move to archive functionality
+            if (bulkArchiveBtn) {
+                bulkArchiveBtn.addEventListener('click', function() {
+                    if (selectedCards.size > 0) {
+                        const cardsToArchive = Array.from(selectedCards);
+                        
+                        // In a real application, you would send this data to a server
+                        // For now, we'll just simulate the archiving process
+                        cardsToArchive.forEach(cardId => {
+                            const card = document.querySelector(`[data-id="${cardId}"]`);
+                            // Add archived styling or hide the card
+                            card.style.opacity = '0.5';
+                            card.style.pointerEvents = 'none';
+                            
+                            // Add archived badge
+                            const archivedBadge = document.createElement('div');
+                            archivedBadge.className = 'archived-badge';
+                            archivedBadge.textContent = 'Archived';
+                            archivedBadge.style.cssText = `
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                background: rgba(0, 0, 0, 0.8);
+                                color: white;
+                                padding: 8px 16px;
+                                border-radius: 8px;
+                                font-size: 14px;
+                                font-weight: 600;
+                                z-index: 100;
+                            `;
+                            card.style.position = 'relative';
+                            card.appendChild(archivedBadge);
+                        });
+                        
+                        // Show success message
+                        alert(`Moved ${selectedCards.size} item(s) to archive`);
+                        
+                        // Exit selection mode
+                        if (bulkToggleBtn) bulkToggleBtn.click();
+                        
+                        // Update filter counts after archiving
+                        updateAllFilterCounts();
+                    }
+                });
+            }
+
+            // Update bulk selection UI
+            function updateBulkSelectionUI() {
+                const selectedCount = selectedCards.size;
+                const totalCards = cardCheckboxes.length;
+                
+                // Update selected count
+                bulkSelectedCount.textContent = `${selectedCount} selected`;
+                
+                // Enable/disable action buttons
+                const hasSelection = selectedCount > 0;
+                if (bulkFavoriteBtn) bulkFavoriteBtn.disabled = !hasSelection;
+                if (bulkArchiveBtn) bulkArchiveBtn.disabled = !hasSelection;
+                
+                // Update select/deselect all buttons
+                const allSelected = selectedCount === totalCards;
+                if (bulkSelectAllBtn) {
+                    bulkSelectAllBtn.style.display = allSelected ? 'none' : 'block';
+                }
+                if (bulkDeselectAllBtn) {
+                    bulkDeselectAllBtn.style.display = selectedCount > 0 ? 'block' : 'none';
+                }
+            }
+
+            // Initialize bulk selection UI
+            updateBulkSelectionUI();
         });
-        updateCounts();
-    }
-
-    // Open modal
-    function openModal(id) {
-        const recall = recalls.find(r => r.id === id);
-        if (!recall) return;
-
-        activeCardId = id;
-        modalTitle.textContent = `Recall from ${recall.date}`;
-        modalImage.textContent = `[Full Screenshot for ID: ${recall.id}]`;
-        modalTags.innerHTML = recall.tags.map(tag => `<span class="tag-item">${tag}</span>`).join('');
-        modalFavoriteBtn.classList.toggle('active', recall.favorite);
-        
-        cardModal.classList.add('show');
-    }
-
-    // Close modal
-    modalClose.addEventListener('click', () => {
-        cardModal.classList.remove('show');
-        activeCardId = null;
-    });
-
-    // Toggle favorite
-    function toggleFavorite(id) {
-        const recall = recalls.find(r => r.id === id);
-        if (!recall) return;
-
-        recall.favorite = !recall.favorite;
-        renderCards(recalls.filter(r => !r.archived));
-        
-        // Update modal if it's open for this card
-        if (activeCardId === id) {
-            modalFavoriteBtn.classList.toggle('active', recall.favorite);
-        }
-		updateCounts();
-    }
-
-    // Toggle archive
-    function toggleArchive(id) {
-        const recall = recalls.find(r => r.id === id);
-        if (recall) {
-            recall.archived = !recall.archived;
-            renderCards(recalls.filter(r => !r.archived));
-            updateCounts();
-        }
-    }
-
-    // Modal favorite button
-    modalFavoriteBtn.addEventListener('click', () => {
-        if (activeCardId) {
-            toggleFavorite(activeCardId);
-        }
-    });
-
-    // Modal archive button
-    modalArchiveBtn.addEventListener('click', () => {
-        if (activeCardId) {
-            toggleArchive(activeCardId);
-            cardModal.classList.remove('show');
-        }
-    });
-
-    // Update counts
-    function updateCounts() {
-        document.getElementById('allRecallsCount').textContent = recalls.filter(r => !r.archived).length;
-        document.getElementById('favouritesCount').textContent = recalls.filter(r => r.favorite && !r.archived).length;
-        document.getElementById('archiveCount').textContent = recalls.filter(r => r.archived).length;
-    }
-
-    // Initial render
-    renderCards(recalls.filter(r => !r.archived));
-
-</script>
+    </script>
 </body>
 </html>
