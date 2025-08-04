@@ -193,6 +193,29 @@
             font-weight: 500;
         }
 
+        .filter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .filter-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--surface-elevated);
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .filter-item.active .filter-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
         /* Date Range Special Styling */
         .date-range-section {
             background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
@@ -1622,9 +1645,18 @@
             <div class="filter-section">
                 <h3 class="filter-title">Library</h3>
                 <ul class="filter-list">
-                    <li class="filter-item active">All Recalls</li>
-                    <li class="filter-item">Favourites</li>
-                    <li class="filter-item">Archive</li>
+                    <li class="filter-item active">
+                        <span>All Recalls</span>
+                        <span class="filter-count" id="allRecallsCount">6</span>
+                    </li>
+                    <li class="filter-item">
+                        <span>Favourites</span>
+                        <span class="filter-count" id="favouritesCount">2</span>
+                    </li>
+                    <li class="filter-item">
+                        <span>Archive</span>
+                        <span class="filter-count" id="archiveCount">0</span>
+                    </li>
                 </ul>
             </div>
 
@@ -1711,21 +1743,21 @@
                         <div class="user-item-content">
                             <div class="user-avatar">R</div>
                             <span class="user-name">Rahul</span>
-                            <span class="user-count">4</span>
+                            <span class="user-count" id="rahulCount">3</span>
                         </div>
                     </li>
-                    <li class="filter-item user-filter-item" data-user="Sarah">
+                    <li class="filter-item user-filter-item" data-user="Utsav">
                         <div class="user-item-content">
-                            <div class="user-avatar">S</div>
-                            <span class="user-name">Sarah</span>
-                            <span class="user-count">2</span>
+                            <div class="user-avatar">U</div>
+                            <span class="user-name">Utsav</span>
+                            <span class="user-count" id="utsavCount">2</span>
                         </div>
                     </li>
-                    <li class="filter-item user-filter-item" data-user="Alex">
+                    <li class="filter-item user-filter-item" data-user="Deep">
                         <div class="user-item-content">
-                            <div class="user-avatar">A</div>
-                            <span class="user-name">Alex</span>
-                            <span class="user-count">1</span>
+                            <div class="user-avatar">D</div>
+                            <span class="user-name">Deep</span>
+                            <span class="user-count" id="deepCount">1</span>
                         </div>
                     </li>
                 </ul>
@@ -1806,7 +1838,7 @@
                     <div class="card-content">
                         <div class="card-meta">
                             <span class="date">July 29, 2025</span>
-                            <span class="user">Added by Sarah</span>
+                            <span class="user">Added by Utsav</span>
                         </div>
                         <div class="card-notes">User engagement analytics dashboard showing interesting patterns in user behavior.</div>
                         <div class="card-tags">
@@ -1854,7 +1886,7 @@
                     <div class="card-content">
                         <div class="card-meta">
                             <span class="date">July 27, 2025</span>
-                            <span class="user">Added by Alex</span>
+                            <span class="user">Added by Deep</span>
                         </div>
                         <div class="card-notes">Design inspiration for landing page. Clean layout with great color palette and typography choices.</div>
                         <div class="card-tags">
@@ -1878,7 +1910,7 @@
                     <div class="card-content">
                         <div class="card-meta">
                             <span class="date">July 26, 2025</span>
-                            <span class="user">Added by Sarah</span>
+                            <span class="user">Added by Utsav</span>
                         </div>
                         <div class="card-notes">Database optimization techniques for better performance in production environments.</div>
                         <div class="card-tags">
@@ -2032,7 +2064,7 @@
                                 </div>
                                 <div class="comment-content">
                                     <div class="comment-header">
-                                        <span class="comment-author">Sarah Chen</span>
+                                        <span class="comment-author">Utsav Chen</span>
                                         <span class="comment-time">2 hours ago</span>
                                     </div>
                                     <div class="comment-text">This is really helpful! I encountered a similar issue last week. Thanks for documenting this.</div>
@@ -2574,18 +2606,12 @@
                 captureModal.classList.remove('show');
             });
 
-            // Favorite buttons
-            document.querySelectorAll('.favorite-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    this.classList.toggle('active');
-                });
-            });
 
             // Modal favorite button
             const modalFavoriteBtn = document.getElementById('modalFavoriteBtn');
             modalFavoriteBtn.addEventListener('click', function() {
                 this.classList.toggle('active');
+                updateAllFilterCounts(); // Update counts when modal favorite changes
             });
 
             // Share functionality
@@ -2632,7 +2658,7 @@
 
             let commentsData = [
                 {
-                    author: 'Sarah Chen',
+                    author: 'Utsav Chen',
                     text: 'This is really helpful! I encountered a similar issue last week. Thanks for documenting this.',
                     time: '2 hours ago'
                 },
@@ -2710,50 +2736,195 @@
             // Capture button
             captureBtn.addEventListener('click', captureScreenshot);
 
+            // Global filter state
+            let currentFilters = {
+                library: 'all', // all, favourites, archive
+                dateRange: 'all', // all, today, week, month, quarter, custom
+                user: 'all',
+                tags: [] // array of selected tags
+            };
+
             // Filter handlers
             document.querySelectorAll('.filter-item').forEach(item => {
                 item.addEventListener('click', function() {
                     const parent = item.parentElement;
-                    parent.querySelectorAll('.filter-item').forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
                     
-                    // Handle user filtering
+                    // Handle different filter types
                     if (item.classList.contains('user-filter-item')) {
-                        const selectedUser = item.getAttribute('data-user');
-                        filterCardsByUser(selectedUser);
+                        // User filter
+                        parent.querySelectorAll('.filter-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        currentFilters.user = item.getAttribute('data-user');
+                    } else if (parent.parentElement.querySelector('.filter-title').textContent.trim() === 'Library') {
+                        // Library filter (All Recalls, Favourites, Archive)
+                        parent.querySelectorAll('.filter-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        
+                        // Get the filter text from the first span (not including the count)
+                        const filterSpan = item.querySelector('span:first-child');
+                        const filterText = filterSpan ? filterSpan.textContent.trim().toLowerCase() : item.textContent.trim().toLowerCase();
+                        
+                        if (filterText === 'all recalls') {
+                            currentFilters.library = 'all';
+                        } else if (filterText === 'favourites') {
+                            currentFilters.library = 'favourites';
+                        } else if (filterText === 'archive') {
+                            currentFilters.library = 'archive';
+                        }
+                    }
+                    
+                    // Apply all filters
+                    applyAllFilters();
+                });
+            });
+
+            // Date range filter handlers
+            document.querySelectorAll('input[name="dateRange"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    currentFilters.dateRange = this.value;
+                    
+                    // Show/hide custom date picker
+                    const customDatePicker = document.getElementById('customDatePicker');
+                    if (this.value === 'custom') {
+                        customDatePicker.style.display = 'block';
+                    } else {
+                        customDatePicker.style.display = 'none';
+                        applyAllFilters();
                     }
                 });
             });
 
-            // User filtering function
-            function filterCardsByUser(selectedUser) {
+            // Custom date range apply button
+            const applyCustomDateBtn = document.getElementById('applyCustomDate');
+            if (applyCustomDateBtn) {
+                applyCustomDateBtn.addEventListener('click', function() {
+                    const fromDate = document.getElementById('fromDate').value;
+                    const toDate = document.getElementById('toDate').value;
+                    
+                    if (fromDate && toDate) {
+                        currentFilters.customFromDate = fromDate;
+                        currentFilters.customToDate = toDate;
+                        applyAllFilters();
+                    } else {
+                        alert('Please select both dates');
+                    }
+                });
+            }
+
+            // Tag filter handlers
+            document.querySelectorAll('.tag-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    if (!item.classList.contains('removable-tag')) { // Don't handle removable tags
+                        const tagText = item.textContent.trim();
+                        item.classList.toggle('active');
+                        
+                        if (item.classList.contains('active')) {
+                            if (!currentFilters.tags.includes(tagText)) {
+                                currentFilters.tags.push(tagText);
+                            }
+                        } else {
+                            currentFilters.tags = currentFilters.tags.filter(tag => tag !== tagText);
+                        }
+                        
+                        applyAllFilters();
+                    }
+                });
+            });
+
+            // Main filtering function that applies all filters
+            function applyAllFilters() {
                 const cards = document.querySelectorAll('.card');
                 
                 cards.forEach(card => {
-                    if (selectedUser === 'all') {
-                        card.style.display = 'block';
-                    } else {
-                        const userElement = card.querySelector('.user');
-                        const cardUser = userElement ? userElement.textContent.replace('Added by ', '') : '';
-                        
-                        if (cardUser === selectedUser) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
+                    let shouldShow = true;
+                    
+                    // Library filter (favourites/archive)
+                    if (currentFilters.library === 'favourites') {
+                        const favoriteBtn = card.querySelector('.favorite-btn');
+                        shouldShow = shouldShow && favoriteBtn && favoriteBtn.classList.contains('active');
+                    } else if (currentFilters.library === 'archive') {
+                        // Check if card is archived (has archived badge or opacity styling)
+                        const isArchived = card.querySelector('.archived-badge') || 
+                                          card.style.opacity === '0.5';
+                        shouldShow = shouldShow && isArchived;
+                    } else if (currentFilters.library === 'all') {
+                        // For "All Recalls", exclude archived items
+                        const isArchived = card.querySelector('.archived-badge') || 
+                                          card.style.opacity === '0.5';
+                        shouldShow = shouldShow && !isArchived;
+                    }
+                    
+                    // Date range filter
+                    if (currentFilters.dateRange !== 'all') {
+                        const cardDateElement = card.querySelector('.date');
+                        if (cardDateElement) {
+                            const cardDate = new Date(cardDateElement.textContent);
+                            const today = new Date();
+                            
+                            switch (currentFilters.dateRange) {
+                                case 'today':
+                                    shouldShow = shouldShow && isSameDay(cardDate, today);
+                                    break;
+                                case 'week':
+                                    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                                    shouldShow = shouldShow && cardDate >= weekAgo;
+                                    break;
+                                case 'month':
+                                    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                                    shouldShow = shouldShow && cardDate >= monthAgo;
+                                    break;
+                                case 'quarter':
+                                    const quarterAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+                                    shouldShow = shouldShow && cardDate >= quarterAgo;
+                                    break;
+                                case 'custom':
+                                    if (currentFilters.customFromDate && currentFilters.customToDate) {
+                                        const fromDate = new Date(currentFilters.customFromDate);
+                                        const toDate = new Date(currentFilters.customToDate);
+                                        toDate.setHours(23, 59, 59, 999); // Include the entire end date
+                                        shouldShow = shouldShow && cardDate >= fromDate && cardDate <= toDate;
+                                    }
+                                    break;
+                            }
                         }
                     }
+                    
+                    // User filter
+                    if (currentFilters.user !== 'all') {
+                        const userElement = card.querySelector('.user');
+                        const cardUser = userElement ? userElement.textContent.replace('Added by ', '') : '';
+                        shouldShow = shouldShow && cardUser === currentFilters.user;
+                    }
+                    
+                    // Tags filter
+                    if (currentFilters.tags.length > 0) {
+                        const cardTags = Array.from(card.querySelectorAll('.card-tag')).map(tag => tag.textContent.trim());
+                        const hasAllSelectedTags = currentFilters.tags.every(selectedTag => 
+                            cardTags.includes(selectedTag)
+                        );
+                        shouldShow = shouldShow && hasAllSelectedTags;
+                    }
+                    
+                    // Show/hide card
+                    card.style.display = shouldShow ? 'block' : 'none';
                 });
                 
-                // Update the recall count based on visible cards
                 updateRecallCountForFilter();
+            }
+
+            // Helper function to check if two dates are the same day
+            function isSameDay(date1, date2) {
+                return date1.getDate() === date2.getDate() &&
+                       date1.getMonth() === date2.getMonth() &&
+                       date1.getFullYear() === date2.getFullYear();
             }
 
             // Update recall count for filtered results
             function updateRecallCountForFilter() {
-                const visibleCards = document.querySelectorAll('.card[style*="block"], .card:not([style*="none"])');
-                const count = Array.from(visibleCards).filter(card => 
+                const visibleCards = Array.from(document.querySelectorAll('.card')).filter(card => 
                     !card.style.display || card.style.display !== 'none'
-                ).length;
+                );
+                const count = visibleCards.length;
                 
                 const recallCountElement = document.getElementById('recallCount');
                 if (recallCountElement) {
@@ -2761,39 +2932,83 @@
                 }
             }
 
-            document.querySelectorAll('.tag-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    item.classList.toggle('active');
-                });
-            });
-
-            // Date range functionality
-            document.querySelectorAll('input[name="dateRange"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    document.querySelectorAll('.date-option').forEach(opt => opt.classList.remove('active'));
-                    this.parentElement.classList.add('active');
+            // Update all filter counts dynamically
+            function updateAllFilterCounts() {
+                const allCards = document.querySelectorAll('.card');
+                
+                // Library filter counts
+                let allRecallsCount = 0;
+                let favouritesCount = 0;
+                let archiveCount = 0;
+                
+                // User filter counts
+                let rahulCount = 0;
+                let utsavCount = 0;
+                let deepCount = 0;
+                
+                allCards.forEach(card => {
+                    const isArchived = card.querySelector('.archived-badge') || card.style.opacity === '0.5';
+                    const isFavorited = card.querySelector('.favorite-btn') && card.querySelector('.favorite-btn').classList.contains('active');
+                    const userElement = card.querySelector('.user');
+                    const cardUser = userElement ? userElement.textContent.replace('Added by ', '') : '';
                     
-                    const customPicker = document.getElementById('customDatePicker');
-                    if (this.value === 'custom') {
-                        customPicker.classList.add('show');
+                    // Count for library filters
+                    if (isArchived) {
+                        archiveCount++;
                     } else {
-                        customPicker.classList.remove('show');
+                        allRecallsCount++; // Non-archived items
+                    }
+                    
+                    if (isFavorited && !isArchived) {
+                        favouritesCount++; // Only count non-archived favorites
+                    }
+                    
+                    // Count for user filters
+                    switch (cardUser) {
+                        case 'Rahul':
+                            if (!isArchived) rahulCount++;
+                            break;
+                        case 'Utsav':
+                            if (!isArchived) utsavCount++;
+                            break;
+                        case 'Deep':
+                            if (!isArchived) deepCount++;
+                            break;
                     }
                 });
-            });
+                
+                // Update library filter counts
+                const allRecallsCountEl = document.getElementById('allRecallsCount');
+                const favouritesCountEl = document.getElementById('favouritesCount');
+                const archiveCountEl = document.getElementById('archiveCount');
+                
+                if (allRecallsCountEl) allRecallsCountEl.textContent = allRecallsCount;
+                if (favouritesCountEl) favouritesCountEl.textContent = favouritesCount;
+                if (archiveCountEl) archiveCountEl.textContent = archiveCount;
+                
+                // Update user filter counts
+                const rahulCountEl = document.getElementById('rahulCount');
+                const utsavCountEl = document.getElementById('utsavCount');
+                const deepCountEl = document.getElementById('deepCount');
+                
+                if (rahulCountEl) rahulCountEl.textContent = rahulCount;
+                if (utsavCountEl) utsavCountEl.textContent = utsavCount;
+                if (deepCountEl) deepCountEl.textContent = deepCount;
+            }
 
-            document.getElementById('applyCustomDate').addEventListener('click', function() {
-                const fromDate = document.getElementById('fromDate').value;
-                const toDate = document.getElementById('toDate').value;
-                if (fromDate && toDate) {
-                    console.log('Apply custom date range:', fromDate, 'to', toDate);
-                } else {
-                    alert('Please select both dates');
-                }
+
+            // Favorite button handlers
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    btn.classList.toggle('active');
+                    updateAllFilterCounts(); // Update counts when favorites change
+                });
             });
 
             // Update count on page load
             updateRecallCount();
+            updateAllFilterCounts();
 
             // Bulk Selection Functionality
             let bulkSelectionMode = false;
@@ -2932,6 +3147,9 @@
                         
                         // Exit selection mode
                         bulkToggleBtn.click();
+                        
+                        // Update filter counts after adding to favorites
+                        updateAllFilterCounts();
                     }
                 });
             }
@@ -2976,6 +3194,9 @@
                         
                         // Exit selection mode
                         if (bulkToggleBtn) bulkToggleBtn.click();
+                        
+                        // Update filter counts after archiving
+                        updateAllFilterCounts();
                     }
                 });
             }
