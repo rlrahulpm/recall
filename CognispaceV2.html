@@ -1,662 +1,4 @@
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sample data
-            const sampleNotes = [
-                { text: "Terminal command failed during npm install", type: "system" },
-                { text: "Error occurred due to network timeout", type: "system" },
-                { text: "Resolved by clearing npm cache", type: "manual" },
-                { text: "Remember to use --force flag next time", type: "manual" },
-                { text: "Check network connection before running", type: "manual" },
-                { text: "Documented solution in team wiki", type: "manual" }
-            ];
-
-            const relatedCardsData = [
-                { date: "July 26, 2025", notes: "Similar npm error with different package", tags: ["npm", "error", "cli"] },
-                { date: "July 25, 2025", notes: "Package installation troubleshooting guide", tags: ["npm", "guide", "cli"] },
-                { date: "July 24, 2025", notes: "Network configuration for npm registry", tags: ["npm", "network", "config"] }
-            ];
-
-            let currentNotes = [...sampleNotes];
-            let currentTags = [];
-            let captureNotes = [];
-            let captureTags = [];
-
-            // DOM elements
-            const modal = document.getElementById('cardModal');
-            const captureModal = document.getElementById('captureModal');
-            const processingOverlay = document.getElementById('processingOverlay');
-            const modalClose = document.getElementById('modalClose');
-            const captureModalClose = document.getElementById('captureModalClose');
-            const modalDate = document.getElementById('modalDate');
-            const modalUser = document.getElementById('modalUser');
-            const modalNotesList = document.getElementById('modalNotesList');
-            const modalTags = document.getElementById('modalTags');
-            const addNoteBtn = document.getElementById('addNoteBtn');
-            const addTagBtn = document.getElementById('addTagBtn');
-            const relatedCards = document.getElementById('relatedCards');
-            const captureBtn = document.getElementById('captureBtn');
-            
-            // Capture modal elements
-            const screenshotCanvas = document.getElementById('screenshotCanvas');
-            const captureImage = document.getElementById('captureImage');
-            const captureNotesList = document.getElementById('captureNotesList');
-            const captureTagsEl = document.getElementById('captureTags');
-            const captureDate = document.getElementById('captureDate');
-            const addCaptureNoteBtn = document.getElementById('addCaptureNoteBtn');
-            const addCaptureTagBtn = document.getElementById('addCaptureTagBtn');
-            const cancelCaptureBtn = document.getElementById('cancelCaptureBtn');
-            const saveToCognispaceBtn = document.getElementById('saveToCognispaceBtn');
-            const aiTagSuggestionsText = document.getElementById('aiTagSuggestionsText');
-            const aiNoteSuggestionsText = document.getElementById('aiNoteSuggestionsText');
-
-            // Screenshot capture function
-            async function captureScreenshot() {
-                try {
-                    captureModal.classList.add('show');
-                    processingOverlay.style.display = 'flex';
-                    
-                    // Set current date
-                    captureDate.textContent = new Date().toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    });
-
-                    // Simulate screenshot capture
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    
-                    // Create a mock screenshot
-                    const canvas = screenshotCanvas;
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 800;
-                    canvas.height = 600;
-                    
-                    // Create gradient background
-                    const gradient = ctx.createLinearGradient(0, 0, 800, 600);
-                    gradient.addColorStop(0, '#667eea');
-                    gradient.addColorStop(1, '#764ba2');
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(0, 0, 800, 600);
-                    
-                    // Add some mock content
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold 32px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('Screenshot Captured', 400, 250);
-                    
-                    ctx.font = '18px Arial';
-                    ctx.fillText('CogniSpace AI is analyzing this content...', 400, 300);
-                    
-                    // Add some mock UI elements
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-                    ctx.fillRect(50, 100, 700, 80);
-                    ctx.fillRect(50, 200, 300, 200);
-                    ctx.fillRect(400, 200, 350, 200);
-                    
-                    // Simulate AI processing
-                    processingOverlay.querySelector('.processing-text').innerHTML = `
-                        <div>Analyzing screenshot content...</div>
-                        <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">AI is extracting insights</div>
-                    `;
-                    
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    
-                    // Hide processing overlay
-                    processingOverlay.style.display = 'none';
-                    
-                    // Simulate AI-generated content
-                    await simulateAIAnalysis();
-                    
-                } catch (error) {
-                    console.error('Screenshot capture failed:', error);
-                    alert('Screenshot capture is not supported in this environment. This is a demo of the UI.');
-                    processingOverlay.style.display = 'none';
-                }
-            }
-
-            // Simulate AI analysis
-            async function simulateAIAnalysis() {
-                // AI suggests tags
-                const aiSuggestedTags = ['screenshot', 'ui-design', 'web-development', 'interface', 'cognispace'];
-                captureTags = [...aiSuggestedTags];
-                
-                aiTagSuggestionsText.textContent = 'AI detected: Web interface, gradient design, text content, and development-related elements';
-                renderCaptureTags(captureTags);
-                
-                // AI suggests notes
-                const aiSuggestedNotes = [
-                    { text: "Screenshot shows a web interface with gradient background", type: "system" },
-                    { text: "Detected text elements and UI components", type: "system" },
-                    { text: "Interface appears to be related to CogniSpace application", type: "system" },
-                    { text: "Color scheme uses purple to teal gradient", type: "system" }
-                ];
-                
-                captureNotes = [...aiSuggestedNotes];
-                aiNoteSuggestionsText.textContent = 'AI identified interface elements, color schemes, and content patterns in the screenshot';
-                renderCaptureNotes(captureNotes);
-            }
-
-            // Render functions for capture modal
-            function renderCaptureNotes(notes) {
-                captureNotesList.innerHTML = '';
-                notes.forEach((note, index) => {
-                    const noteItem = document.createElement('div');
-                    noteItem.className = 'note-item';
-                    noteItem.innerHTML = `
-                        <svg class="note-icon ${note.type}" viewBox="0 0 20 20" fill="currentColor">
-                            ${note.type === 'system' ? 
-                                '<path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />' :
-                                '<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />'
-                            }
-                        </svg>
-                        <div class="note-text">${note.text}</div>
-                        <div class="note-actions">
-                            <button class="note-action" onclick="editCaptureNote(${index})">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                </svg>
-                            </button>
-                            <button class="note-action" onclick="deleteCaptureNote(${index})">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                        </div>
-                    `;
-                    captureNotesList.appendChild(noteItem);
-                });
-            }
-
-            function renderCaptureTags(tags) {
-                captureTagsEl.innerHTML = '';
-                tags.forEach((tag, index) => {
-                    const tagElement = document.createElement('span');
-                    tagElement.className = 'tag-item';
-                    tagElement.innerHTML = `${tag} <button onclick="deleteCaptureTag(${index})" style="background: none; border: none; margin-left: 4px; cursor: pointer;">×</button>`;
-                    captureTagsEl.appendChild(tagElement);
-                });
-            }
-
-            // Capture note and tag management
-            window.editCaptureNote = function(index) {
-                const newText = prompt('Edit note:', captureNotes[index].text);
-                if (newText && newText.trim()) {
-                    captureNotes[index].text = newText.trim();
-                    renderCaptureNotes(captureNotes);
-                }
-            };
-
-            window.deleteCaptureNote = function(index) {
-                if (confirm('Delete this note?')) {
-                    captureNotes.splice(index, 1);
-                    renderCaptureNotes(captureNotes);
-                }
-            };
-
-            window.deleteCaptureTag = function(index) {
-                captureTags.splice(index, 1);
-                renderCaptureTags(captureTags);
-            };
-
-            // Render functions for regular modal
-            function renderNotes(notes) {
-                modalNotesList.innerHTML = '';
-                notes.forEach((note, index) => {
-                    const noteItem = document.createElement('div');
-                    noteItem.className = 'note-item';
-                    noteItem.innerHTML = `
-                        <svg class="note-icon ${note.type}" viewBox="0 0 20 20" fill="currentColor">
-                            ${note.type === 'system' ? 
-                                '<path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />' :
-                                '<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />'
-                            }
-                        </svg>
-                        <div class="note-text">${note.text}</div>
-                        <div class="note-actions">
-                            <button class="note-action" onclick="editNote(${index})">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                </svg>
-                            </button>
-                            <button class="note-action" onclick="deleteNote(${index})">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                        </div>
-                    `;
-                    modalNotesList.appendChild(noteItem);
-                });
-            }
-
-            function renderTags(tags) {
-                modalTags.innerHTML = '';
-                tags.forEach((tag, index) => {
-                    const tagElement = document.createElement('span');
-                    tagElement.className = 'tag-item';
-                    tagElement.innerHTML = `${tag} <button onclick="deleteTag(${index})" style="background: none; border: none; margin-left: 4px; cursor: pointer;">×</button>`;
-                    modalTags.appendChild(tagElement);
-                });
-            }
-
-            function renderRelatedCards(cards) {
-                relatedCards.innerHTML = '';
-                cards.forEach(card => {
-                    const cardElement = document.createElement('div');
-                    cardElement.className = 'related-card';
-                    cardElement.innerHTML = `
-                        <div class="related-card-image">[Screenshot]</div>
-                        <div class="related-card-date">${card.date}</div>
-                        <div class="related-card-notes">${card.notes}</div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;">
-                            ${card.tags.map(tag => `<span class="card-tag">${tag}</span>`).join('')}
-                        </div>
-                    `;
-                    relatedCards.appendChild(cardElement);
-                });
-            }
-
-            // Note and tag management for regular modal
-            window.editNote = function(index) {
-                const newText = prompt('Edit note:', currentNotes[index].text);
-                if (newText && newText.trim()) {
-                    currentNotes[index].text = newText.trim();
-                    renderNotes(currentNotes);
-                }
-            };
-
-            window.deleteNote = function(index) {
-                if (confirm('Delete this note?')) {
-                    currentNotes.splice(index, 1);
-                    renderNotes(currentNotes);
-                }
-            };
-
-            window.deleteTag = function(index) {
-                currentTags.splice(index, 1);
-                renderTags(currentTags);
-            };
-
-            // Event listeners for regular modal
-            addNoteBtn.addEventListener('click', function() {
-                const noteText = prompt('Enter new note:');
-                if (noteText && noteText.trim()) {
-                    currentNotes.push({ text: noteText.trim(), type: 'manual' });
-                    renderNotes(currentNotes);
-                }
-            });
-
-            addTagBtn.addEventListener('click', function() {
-                const tagText = prompt('Enter new tag:');
-                if (tagText && tagText.trim()) {
-                    const newTag = tagText.trim().toLowerCase();
-                    if (!currentTags.includes(newTag)) {
-                        currentTags.push(newTag);
-                        renderTags(currentTags);
-                    }
-                }
-            });
-
-            // Event listeners for capture modal
-            addCaptureNoteBtn.addEventListener('click', function() {
-                const noteText = prompt('Enter new note:');
-                if (noteText && noteText.trim()) {
-                    captureNotes.push({ text: noteText.trim(), type: 'manual' });
-                    renderCaptureNotes(captureNotes);
-                }
-            });
-
-            addCaptureTagBtn.addEventListener('click', function() {
-                const tagText = prompt('Enter new tag:');
-                if (tagText && tagText.trim()) {
-                    const newTag = tagText.trim().toLowerCase();
-                    if (!captureTags.includes(newTag)) {
-                        captureTags.push(newTag);
-                        renderCaptureTags(captureTags);
-                    }
-                }
-            });
-
-            // Card click handlers
-            document.querySelectorAll('.card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    if (e.target.closest('.favorite-btn')) return;
-
-                    modalDate.textContent = card.querySelector('.date').textContent;
-                    const userText = card.querySelector('.user').textContent;
-                    modalUser.textContent = userText.replace('Added by ', '');
-                    
-                    currentTags = [];
-                    card.querySelectorAll('.card-tag').forEach(tag => {
-                        currentTags.push(tag.textContent);
-                    });
-                    
-                    renderNotes(currentNotes);
-                    renderTags(currentTags);
-                    renderRelatedCards(relatedCardsData);
-                    initializeComments();
-                    
-                    modal.classList.add('show');
-                });
-            });
-
-            // Favorite button handlers
-            document.querySelectorAll('.favorite-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    btn.classList.toggle('active');
-                });
-            });
-
-            // Modal favorite button
-            const modalFavoriteBtn = document.getElementById('modalFavoriteBtn');
-            const archiveBtn = document.getElementById('archiveBtn');
-            const shareBtn = document.getElementById('shareBtn');
-            const shareDropdown = document.getElementById('shareDropdown');
-            const submitCommentBtn = document.getElementById('submitCommentBtn');
-            const commentInput = document.getElementById('commentInput');
-            const commentsList = document.getElementById('commentsList');
-            const commentCount = document.getElementById('commentCount');
-
-            // Comments data
-            let comments = [
-                {
-                    id: 1,
-                    author: 'Sarah Chen',
-                    text: 'This is really helpful! I encountered a similar issue last week. Thanks for documenting this.',
-                    time: '2 hours ago'
-                },
-                {
-                    id: 2,
-                    author: 'Mike Johnson', 
-                    text: 'Great find! Have you tried the alternative approach using npm ci instead?',
-                    time: '5 hours ago'
-                }
-            ];
-
-            modalFavoriteBtn.addEventListener('click', function() {
-                modalFavoriteBtn.classList.toggle('active');
-                showToast(modalFavoriteBtn.classList.contains('active') ? 'Added to favorites!' : 'Removed from favorites');
-            });
-
-
-            archiveBtn.addEventListener('click', function() {
-                if (confirm('Archive this memory? You can restore it later from the archive.')) {
-                    modal.classList.remove('show');
-                    showToast('Memory archived successfully');
-                }
-            });
-
-            // Share functionality
-            shareBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                shareDropdown.classList.toggle('show');
-            });
-
-            // Close share dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!shareBtn.contains(e.target)) {
-                    shareDropdown.classList.remove('show');
-                }
-            });
-
-            // Share option handlers
-            document.querySelectorAll('.share-option').forEach(option => {
-                option.addEventListener('click', function() {
-                    const shareType = this.dataset.type;
-                    const memoryTitle = modal.querySelector('.modal-title').textContent;
-                    const memoryUrl = `${window.location.origin}/memory/${Date.now()}`;
-                    
-                    switch(shareType) {
-                        case 'link':
-                            navigator.clipboard.writeText(memoryUrl).then(() => {
-                                showToast('Link copied to clipboard!');
-                            });
-                            break;
-                        case 'email':
-                            const emailSubject = encodeURIComponent(`Check out this memory: ${memoryTitle}`);
-                            const emailBody = encodeURIComponent(`I thought you might find this interesting:\n\n${memoryUrl}`);
-                            window.open(`mailto:?subject=${emailSubject}&body=${emailBody}`);
-                            break;
-                        case 'slack':
-                            showToast('Slack integration coming soon!');
-                            break;
-                    }
-                    shareDropdown.classList.remove('show');
-                });
-            });
-
-            // Comment functionality
-            function updateCommentCount() {
-                commentCount.textContent = comments.length;
-            }
-
-            function renderComments() {
-                commentsList.innerHTML = comments.map(comment => `
-                    <div class="comment-item">
-                        <div class="comment-avatar">
-                            <svg width="32" height="32" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                        <div class="comment-content">
-                            <div class="comment-header">
-                                <span class="comment-author">${comment.author}</span>
-                                <span class="comment-time">${comment.time}</span>
-                            </div>
-                            <div class="comment-text">${comment.text}</div>
-                        </div>
-                    </div>
-                `).join('');
-                updateCommentCount();
-            }
-
-            submitCommentBtn.addEventListener('click', function() {
-                const commentText = commentInput.value.trim();
-                if (commentText) {
-                    const newComment = {
-                        id: comments.length + 1,
-                        author: 'You',
-                        text: commentText,
-                        time: 'Just now'
-                    };
-                    comments.unshift(newComment);
-                    renderComments();
-                    commentInput.value = '';
-                    showToast('Comment added successfully!');
-                }
-            });
-
-            // Allow Enter+Shift for new line, Enter alone to submit
-            commentInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    submitCommentBtn.click();
-                }
-            });
-
-            // Initialize comments when modal opens
-            function initializeComments() {
-                renderComments();
-            }
-
-
-            // Modal close handlers
-            modalClose.addEventListener('click', function() {
-                modal.classList.remove('show');
-            });
-
-            captureModalClose.addEventListener('click', function() {
-                captureModal.classList.remove('show');
-            });
-
-            cancelCaptureBtn.addEventListener('click', function() {
-                captureModal.classList.remove('show');
-            });
-
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    modal.classList.remove('show');
-                }
-            });
-
-            captureModal.addEventListener('click', function(e) {
-                if (e.target === captureModal) {
-                    captureModal.classList.remove('show');
-                }
-            });
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    if (modal.classList.contains('show')) {
-                        modal.classList.remove('show');
-                    }
-                    if (captureModal.classList.contains('show')) {
-                        captureModal.classList.remove('show');
-                    }
-                }
-            });
-
-            // Capture button - main functionality
-            captureBtn.addEventListener('click', function() {
-                captureScreenshot();
-            });
-
-            // Save to CogniSpace button
-            saveToCognispaceBtn.addEventListener('click', function() {
-                // Simulate saving
-                const saveData = {
-                    image: screenshotCanvas.toDataURL(),
-                    notes: captureNotes,
-                    tags: captureTags,
-                    date: captureDate.textContent,
-                    user: 'You'
-                };
-                
-                console.log('Saving to CogniSpace:', saveData);
-                
-                // Show success message
-                const originalText = saveToCognispaceBtn.innerHTML;
-                saveToCognispaceBtn.innerHTML = `
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                    Saved Successfully!
-                `;
-                saveToCognispaceBtn.style.background = 'linear-gradient(135deg, #34C759 0%, #30D158 100%)';
-                
-                setTimeout(() => {
-                    captureModal.classList.remove('show');
-                    saveToCognispaceBtn.innerHTML = originalText;
-                    saveToCognispaceBtn.style.background = 'linear-gradient(135deg, #34C759 0%, #30D158 100%)';
-                    
-                    // Reset capture data for next use
-                    captureNotes = [];
-                    captureTags = [];
-                    
-                    // Show a toast notification
-                    showToast('Capture saved to CogniSpace successfully!');
-                }, 1500);
-            });
-
-            // Toast notification function
-            function showToast(message) {
-                const toast = document.createElement('div');
-                toast.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
-                    color: white;
-                    padding: 16px 24px;
-                    border-radius: 12px;
-                    font-size: 16px;
-                    font-weight: 500;
-                    box-shadow: 0 8px 25px rgba(52, 199, 89, 0.3);
-                    z-index: 10000;
-                    transform: translateX(400px);
-                    transition: all 0.3s ease;
-                `;
-                toast.textContent = message;
-                document.body.appendChild(toast);
-                
-                setTimeout(() => {
-                    toast.style.transform = 'translateX(0)';
-                }, 100);
-                
-                setTimeout(() => {
-                    toast.style.transform = 'translateX(400px)';
-                    setTimeout(() => {
-                        document.body.removeChild(toast);
-                    }, 300);
-                }, 3000);
-            }
-
-            // Filter handlers
-            document.querySelectorAll('.filter-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const parent = item.parentElement;
-                    parent.querySelectorAll('.filter-item').forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-                });
-            });
-
-            document.querySelectorAll('.tag-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    item.classList.toggle('active');
-                });
-            });
-
-            // Date range functionality
-            document.querySelectorAll('input[name="dateRange"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    document.querySelectorAll('.date-option').forEach(opt => opt.classList.remove('active'));
-                    this.parentElement.classList.add('active');
-                    
-                    const customPicker = document.getElementById('customDatePicker');
-                    if (this.value === 'custom') {
-                        customPicker.classList.add('show');
-                    } else {
-                        customPicker.classList.remove('show');
-                    }
-                });
-            });
-
-            document.getElementById('applyCustomDate').addEventListener('click', function() {
-                const fromDate = document.getElementById('fromDate').value;
-                const toDate = document.getElementById('toDate').value;
-                if (fromDate && toDate) {
-                    console.log('Apply custom date range:', fromDate, 'to', toDate);
-                    showToast(`Date range applied: ${fromDate} to ${toDate}`);
-                    updateRecallCount(); // Update count when date filter is applied
-                } else {
-                    alert('Please select both dates');
-                }
-            });
-        });
-
-        // Function to update recall count
-        function updateRecallCount() {
-            const allCards = document.querySelectorAll('.card');
-            const visibleCards = Array.from(allCards).filter(card => 
-                card.style.display !== 'none' && !card.hidden
-            );
-            const count = visibleCards.length;
-            const recallCountElement = document.getElementById('recallCount');
-            if (recallCountElement) {
-                recallCountElement.textContent = `${count} Recalls`;
-            }
-        }
-
-        // Update count on page load
-        document.addEventListener('DOMContentLoaded', updateRecallCount);
-
-        // Update count when filters change (you can call this function when applying filters)
-        window.updateRecallCount = updateRecallCount;
-    </script>
-</body>
-</html>
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -672,65 +14,112 @@
         }
 
         :root {
-            --primary: #20B2AA;
-            --primary-hover: #1A9A8A;
-            --bg: #F5F5F7;
-            --surface: #FFFFFF;
-            --text: #1D1D1F;
-            --text-secondary: #6E6E73;
-            --border: #D2D2D7;
+            /* Apple Design System Colors */
+            --primary: #14B8A6;
+            --primary-hover: #0F766E;
+            --primary-light: #5EEAD4;
+            --secondary: #5856D6;
+            --success: #34C759;
+            --warning: #FF9500;
+            --error: #FF3B30;
+            
+            /* Apple Gray Scale */
+            --gray-50: #F9F9F9;
+            --gray-100: #F2F2F7;
+            --gray-200: #E5E5EA;
+            --gray-300: #D1D1D6;
+            --gray-400: #C7C7CC;
+            --gray-500: #AEAEB2;
+            --gray-600: #8E8E93;
+            --gray-700: #636366;
+            --gray-800: #48484A;
+            --gray-900: #1C1C1E;
+            
+            /* Semantic Colors */
+            --bg: #FAFAFA;
+            --surface: rgba(255, 255, 255, 0.8);
+            --surface-elevated: rgba(255, 255, 255, 0.9);
+            --text: var(--gray-900);
+            --text-secondary: var(--gray-600);
+            --text-tertiary: var(--gray-500);
+            --border: var(--gray-200);
+            --border-subtle: var(--gray-100);
+            --divider: var(--gray-200);
+            
+            /* Apple Shadows */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.16);
+            
+            /* Apple Blur */
+            --blur: blur(20px);
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.5;
+            line-height: 1.47058823529;
+            font-size: 17px;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.022em;
         }
 
         /* Header */
         .header {
             background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 20px 0;
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-content {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 40px;
+            padding: 0 22px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.007em;
         }
 
         .search-box {
             position: relative;
-            max-width: 400px;
+            max-width: 420px;
             flex: 1;
-            margin: 0 40px;
+            margin: 0 22px;
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 20px 12px 45px;
+            padding: 10px 16px 10px 36px;
             border: none;
-            background: #E8E8ED;
+            background: var(--gray-100);
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 17px;
+            font-weight: 400;
             outline: none;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
         }
 
         .search-input:focus {
-            background: var(--surface);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+            background: var(--surface-elevated);
+            box-shadow: 0 0 0 2px var(--primary);
+            transform: scale(1.01);
         }
 
         .search-icon {
@@ -745,11 +134,11 @@
 
         /* Main Layout */
         .main {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 40px;
+            padding: 32px 22px;
             display: flex;
-            gap: 40px;
+            gap: 32px;
         }
 
         /* Sidebar */
@@ -759,18 +148,22 @@
         }
 
         .filter-section {
-            background: var(--surface);
-            border-radius: 12px;
+            background: var(--surface-elevated);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border-radius: 16px;
             padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
+            margin-bottom: 16px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-sm);
         }
 
         .filter-title {
             font-size: 16px;
             font-weight: 600;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             color: var(--text);
+            letter-spacing: -0.020em;
         }
 
         .filter-list {
@@ -778,21 +171,26 @@
         }
 
         .filter-item {
-            padding: 10px 12px;
+            padding: 11px 12px;
             margin-bottom: 4px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
+            transition: all 0.2s ease;
+            font-weight: 400;
+            font-size: 15px;
+            letter-spacing: -0.016em;
+            color: var(--text);
         }
 
         .filter-item:hover {
-            background: #F0F0F0;
+            background: var(--gray-100);
+            transform: scale(1.01);
         }
 
         .filter-item.active {
             background: var(--primary);
             color: white;
+            font-weight: 500;
         }
 
         /* Date Range Special Styling */
@@ -822,6 +220,9 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: -0.016em;
         }
 
         .date-option:hover {
@@ -882,35 +283,21 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
             margin-top: 12px;
+            font-size: 15px;
+            letter-spacing: -0.016em;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(20, 184, 166, 0.2);
         }
 
-        .date-stats {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 16px;
-            border-top: 1px solid #E5E7EB;
-            margin-top: 16px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
+        .apply-date-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
         }
 
         /* Tags */
@@ -939,6 +326,83 @@
             color: white;
         }
 
+        /* User Filter Styles */
+        .user-filter-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-item-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        .user-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--surface-elevated);
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .user-filter-item.active .user-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .user-filter-item:hover .user-avatar {
+            transform: scale(1.1);
+            transition: transform 0.2s ease;
+        }
+
+        .removable-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-right: 8px;
+        }
+
+        .tag-remove-icon {
+            width: 14px;
+            height: 14px;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .removable-tag:hover .tag-remove-icon {
+            opacity: 1;
+        }
+
+        .removable-tag:hover {
+            background: #FF3B30;
+        }
+
         /* Content Area */
         .content {
             flex: 1;
@@ -952,31 +416,50 @@
             margin-bottom: 30px;
         }
 
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
         .content-title {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         /* Cards Grid */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            gap: 20px;
         }
 
         .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            background: var(--surface-elevated);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
+            box-shadow: var(--shadow-sm);
         }
 
         .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
         }
 
         .card-image {
@@ -1033,25 +516,31 @@
             position: absolute;
             top: 12px;
             right: 12px;
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 0.5px solid rgba(0, 0, 0, 0.04);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .favorite-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .favorite-btn.active {
             background: #FFD60A;
             border-color: #FFD60A;
+            box-shadow: 0 4px 12px rgba(255, 214, 10, 0.4);
         }
 
         .favorite-icon {
@@ -1079,14 +568,14 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(20, 184, 166, 0.4);
             transition: all 0.3s;
             z-index: 100;
         }
 
         .fab:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 122, 255, 0.5);
+            box-shadow: 0 10px 25px rgba(20, 184, 166, 0.5);
         }
 
         .fab-icon {
@@ -1095,7 +584,7 @@
             color: white;
         }
 
-        /* Modal */
+        /* Modal - Apple Design Language */
         .modal {
             display: none;
             position: fixed;
@@ -1103,11 +592,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            animation: modalFadeIn 0.3s ease-out;
         }
 
         .modal.show {
@@ -1115,75 +606,102 @@
         }
 
         .modal-content {
-            background: var(--surface);
-            border-radius: 16px;
+            background: var(--surface-elevated);
+            border-radius: 20px;
             width: 90%;
-            max-width: 1000px;
-            max-height: 90vh;
+            max-width: 1100px;
+            max-height: 85vh;
             overflow-y: auto;
             position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 0.5px solid var(--border-subtle);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            transform: scale(0.95);
+            animation: modalSlideIn 0.3s ease-out forwards;
         }
 
         .modal-header {
-            padding: 30px 30px 0;
+            padding: 24px 28px 16px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
+            border-bottom: 0.5px solid var(--border-subtle);
+            background: var(--surface-elevated);
         }
 
         .modal-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 600;
+            letter-spacing: -0.022em;
+            color: var(--text);
         }
 
         .modal-close {
-            background: none;
+            background: var(--gray-100);
             border: none;
-            font-size: 28px;
+            font-size: 18px;
             cursor: pointer;
             color: var(--text-secondary);
             padding: 0;
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--gray-200);
+            transform: scale(1.05);
         }
 
         .modal-body {
-            padding: 30px;
+            padding: 0;
             display: flex;
-            gap: 30px;
+            gap: 0;
+            min-height: 400px;
         }
 
         .modal-left {
             flex: 1;
+            padding: 24px 28px;
+            border-right: 0.5px solid var(--border-subtle);
         }
 
         .modal-image {
             width: 100%;
             aspect-ratio: 4/3;
-            background: #F8F9FA;
-            border-radius: 12px;
+            background: var(--gray-50);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #9CA3AF;
-            margin-bottom: 20px;
+            color: var(--text-tertiary);
+            margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+            font-size: 15px;
+            font-weight: 500;
         }
 
         .modal-tags-section h3 {
             margin-bottom: 12px;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
+            letter-spacing: -0.022em;
+            color: var(--text);
         }
 
         .modal-right {
             flex: 1;
+            padding: 24px 28px;
+            background: var(--surface);
         }
 
         .modal-notes-section {
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .modal-notes-header {
@@ -1194,18 +712,28 @@
         }
 
         .modal-notes-title {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
+            letter-spacing: -0.022em;
+            color: var(--text);
         }
 
         .add-note-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: -0.016em;
+        }
+
+        .add-note-btn:hover {
+            background: var(--primary-hover);
+            transform: scale(1.02);
         }
 
         .notes-list {
@@ -1217,10 +745,17 @@
         .note-item {
             display: flex;
             gap: 12px;
-            padding: 12px;
-            background: #F8F9FA;
-            border-radius: 8px;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 12px;
             position: relative;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.2s ease;
+        }
+
+        .note-item:hover {
+            background: var(--gray-100);
+            transform: translateY(-1px);
         }
 
         .note-icon {
@@ -1240,8 +775,10 @@
 
         .note-text {
             flex: 1;
-            font-size: 14px;
-            line-height: 1.4;
+            font-size: 15px;
+            line-height: 1.47;
+            letter-spacing: -0.016em;
+            color: var(--text);
         }
 
         .note-actions {
@@ -1267,11 +804,12 @@
 
         .modal-meta {
             padding-top: 20px;
-            border-top: 1px solid #E5E5E5;
+            border-top: 0.5px solid var(--border-subtle);
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--text-secondary);
+            letter-spacing: -0.016em;
         }
 
         .related-section {
@@ -1333,86 +871,167 @@
             overflow: hidden;
         }
 
-        /* Regular Modal with same design language */
-        .modal .modal-content {
-            max-width: 1100px;
+        /* Modal Animations */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
-        .modal .modal-header {
-            background: linear-gradient(135deg, #20B2AA 0%, #5856D6 100%);
-            color: white;
-            border-radius: 16px 16px 0 0;
-            margin: 0;
-            padding: 20px 30px;
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.95) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Additional styles for completeness */
+        .modal-section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 0.5px solid var(--border-subtle);
         }
 
-        .modal .modal-close {
-            color: white;
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            padding: 0;
-            width: 32px;
-            height: 32px;
+        .modal-section-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text);
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background-color 0.2s;
+            gap: 8px;
+            letter-spacing: -0.022em;
         }
 
-        .modal .modal-close:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .section-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
         }
 
-        .tml-badge {
-            display: inline-flex;
+        .enhanced-add-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 4px 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(20, 184, 166, 0.2);
+            letter-spacing: -0.016em;
+        }
+
+        .enhanced-add-btn:hover {
+            background: var(--primary-hover);
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+        }
+
+        .enhanced-modal-meta {
+            background: var(--gray-50);
+            border: 1px solid var(--border-subtle);
             border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .meta-label {
             font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
             font-weight: 500;
-            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text);
+            letter-spacing: -0.016em;
+        }
+
+        .enhanced-related-section {
+            padding: 24px 28px;
+            border-top: 0.5px solid var(--border-subtle);
+            background: var(--surface);
+        }
+
+        .enhanced-related-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            letter-spacing: -0.022em;
+        }
+
+        .related-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
         }
 
         .modal-actions {
-            padding: 20px 30px;
-            border-top: 1px solid #E5E5E5;
+            padding: 20px 28px;
+            border-top: 0.5px solid var(--border-subtle);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #F8F9FA;
-            border-radius: 0 0 16px 16px;
+            background: var(--surface-elevated);
+            border-radius: 0 0 20px 20px;
         }
 
-
-        /* Share Button Styles */
         .share-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, #1A9A8A 100%);
+            background: var(--primary);
             color: white;
             border: none;
             padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             position: relative;
-            box-shadow: 0 2px 8px rgba(32, 178, 170, 0.3);
+            box-shadow: 0 1px 3px rgba(20, 184, 166, 0.2);
+            letter-spacing: -0.016em;
         }
 
         .share-btn:hover {
+            background: var(--primary-hover);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(32, 178, 170, 0.4);
+            box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
         }
 
         .share-dropdown {
@@ -1420,13 +1039,16 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: var(--surface-elevated);
+            border: 0.5px solid var(--border-subtle);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
             z-index: 1000;
             display: none;
-            margin-top: 4px;
+            margin-top: 8px;
+            overflow: hidden;
         }
 
         .share-dropdown.show {
@@ -1434,35 +1056,33 @@
         }
 
         .share-option {
-            padding: 12px 16px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
             gap: 12px;
             cursor: pointer;
             color: var(--text);
-            font-size: 14px;
-            transition: background-color 0.2s;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: -0.016em;
+            transition: all 0.2s ease;
+            border-bottom: 0.5px solid var(--border-subtle);
         }
 
         .share-option:hover {
-            background: #F8F9FA;
-        }
-
-        .share-option:first-child {
-            border-radius: 8px 8px 0 0;
+            background: var(--gray-50);
         }
 
         .share-option:last-child {
-            border-radius: 0 0 8px 8px;
+            border-bottom: none;
         }
 
         .share-option svg {
             color: var(--text-secondary);
         }
 
-        /* Comments Section Styles */
         .modal-comments-section {
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .comment-count {
@@ -1480,20 +1100,23 @@
 
         .comment-input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 16px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            font-size: 15px;
             font-family: inherit;
             resize: vertical;
             min-height: 80px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            background: var(--surface);
+            transition: border-color 0.2s ease;
+            letter-spacing: -0.016em;
         }
 
         .comment-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(32, 178, 170, 0.1);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
         }
 
         .comment-actions {
@@ -1505,33 +1128,36 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
+            gap: 8px;
+            transition: all 0.2s ease;
+            letter-spacing: -0.016em;
+            box-shadow: 0 1px 3px rgba(20, 184, 166, 0.2);
         }
 
         .comment-submit-btn:hover {
-            background: #1A9A8A;
+            background: var(--primary-hover);
             transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
         }
 
         .comments-list {
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
         .comment-item {
             display: flex;
             gap: 12px;
-            margin-bottom: 16px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #F0F0F0;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 0.5px solid var(--border-subtle);
         }
 
         .comment-item:last-child {
@@ -1543,7 +1169,7 @@
         .comment-avatar {
             width: 32px;
             height: 32px;
-            background: #F3F4F6;
+            background: var(--gray-100);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1553,6 +1179,8 @@
 
         .comment-avatar svg {
             color: var(--text-secondary);
+            width: 18px;
+            height: 18px;
         }
 
         .comment-content {
@@ -1568,62 +1196,68 @@
 
         .comment-author {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--text);
+            letter-spacing: -0.016em;
         }
 
         .comment-time {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-secondary);
         }
 
         .comment-text {
-            font-size: 14px;
+            font-size: 15px;
             color: var(--text);
-            line-height: 1.5;
+            line-height: 1.47;
+            letter-spacing: -0.016em;
         }
 
         .archive-btn {
-            background: none;
-            border: 1px solid #D1D5DB;
+            background: var(--surface);
+            border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
             padding: 12px 24px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 8px;
+            letter-spacing: -0.016em;
         }
 
         .archive-btn:hover {
-            background: #F3F4F6;
-            border-color: #9CA3AF;
+            background: var(--gray-100);
+            border-color: var(--border);
+            transform: scale(1.01);
         }
 
         .modal-favorite-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: var(--gray-100);
+            border: 1px solid var(--border-subtle);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
 
         .modal-favorite-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: var(--gray-200);
             transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .modal-favorite-btn.active {
             background: #FFD60A;
             border-color: #FFD60A;
+            box-shadow: 0 2px 8px rgba(255, 214, 10, 0.3);
         }
 
         .modal-favorite-icon {
@@ -1637,122 +1271,31 @@
             fill: white;
         }
 
-        /* Enhanced sections styling */
-        .modal-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #E5E7EB;
-        }
-
-        .modal-section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-icon {
-            width: 20px;
-            height: 20px;
-            color: var(--primary);
-        }
-
-        .enhanced-add-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, #5856D6 100%);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
-        }
-
-        .enhanced-add-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
-        }
-
-        /* Enhanced meta section */
-        .enhanced-modal-meta {
-            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
-            border: 1px solid #E5E7EB;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .meta-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .meta-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        .meta-value {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        /* Enhanced related section */
-        .enhanced-related-section {
-            padding: 30px;
-            border-top: 1px solid #E5E5E5;
-            background: linear-gradient(135deg, #FAFBFC 0%, #F1F3F4 100%);
-        }
-
-        .enhanced-related-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text);
-        }
-
-        .related-icon {
-            width: 20px;
-            height: 20px;
-            color: var(--primary);
-        }
+        /* Capture Modal Styles */
         .capture-modal .modal-content {
             max-width: 1100px;
         }
 
         .capture-modal .modal-header {
-            background: linear-gradient(135deg, #20B2AA 0%, #5856D6 100%);
-            color: white;
-            border-radius: 16px 16px 0 0;
+            background: var(--surface-elevated);
+            color: var(--text);
+            border-radius: 0;
             margin: 0;
-            padding: 20px 30px;
+            padding: 24px 28px 16px;
+            border-bottom: 0.5px solid var(--border-subtle);
         }
 
         .capture-modal .modal-close {
-            color: white;
+            color: var(--text-secondary);
+            background: var(--gray-100);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+        }
+
+        .capture-modal .modal-close:hover {
+            background: var(--gray-200);
+            transform: scale(1.05);
         }
 
         .ai-badge {
@@ -1874,14 +1417,159 @@
         .ai-suggestions-title {
             font-size: 14px;
             font-weight: 600;
-            color: #0369A1;
+            color: #0F766E;
         }
 
         .ai-suggestions-text {
             font-size: 13px;
-            color: #0369A1;
+            color: #0F766E;
             line-height: 1.4;
         }
+
+        /* Bulk Selection Styles */
+        .bulk-action-toolbar {
+            display: none;
+            background: var(--surface-elevated);
+            border: 0.5px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+        }
+
+        .bulk-action-toolbar.show {
+            display: block;
+        }
+
+        .bulk-toolbar-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .bulk-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .bulk-toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bulk-select-toggle {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border-subtle);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .bulk-select-toggle:hover {
+            background: var(--surface-hover);
+            border-color: var(--border);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .bulk-select-toggle.active {
+            background: #FF3B30;
+            color: white;
+            border-color: #FF3B30;
+        }
+
+        .bulk-select-toggle.active:hover {
+            background: #E6342A;
+        }
+
+        .bulk-selected-count {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .bulk-select-all,
+        .bulk-deselect-all {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .bulk-select-all:hover,
+        .bulk-deselect-all:hover {
+            background: var(--surface-hover);
+        }
+
+        .bulk-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border-subtle);
+            color: var(--text);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .bulk-action-btn:hover {
+            background: var(--surface-hover);
+        }
+
+        .bulk-action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .card-select-checkbox {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+        }
+
+        .card-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-subtle);
+            border-radius: 4px;
+            background: var(--surface-elevated);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .card-checkbox:checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .card.selected {
+            transform: scale(0.98);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        /* Responsive */
         @media (max-width: 1200px) {
             .cards-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -1936,6 +1624,7 @@
                 <ul class="filter-list">
                     <li class="filter-item active">All Recalls</li>
                     <li class="filter-item">Favourites</li>
+                    <li class="filter-item">Archive</li>
                 </ul>
             </div>
 
@@ -1987,7 +1676,6 @@
                     </div>
                     <button class="apply-date-btn" id="applyCustomDate">Apply Range</button>
                 </div>
-                
             </div>
 
             <!-- Tags Filter -->
@@ -2008,17 +1696,83 @@
                     <span class="tag-item">inspiration</span>
                 </div>
             </div>
+
+            <!-- User Filter -->
+            <div class="filter-section">
+                <h3 class="filter-title user-filter-title">
+                    <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                    </svg>
+                    Users
+                </h3>
+                <ul class="filter-list">
+                    <li class="filter-item user-filter-item active" data-user="all">All Users</li>
+                    <li class="filter-item user-filter-item" data-user="Rahul">
+                        <div class="user-item-content">
+                            <div class="user-avatar">R</div>
+                            <span class="user-name">Rahul</span>
+                            <span class="user-count">4</span>
+                        </div>
+                    </li>
+                    <li class="filter-item user-filter-item" data-user="Sarah">
+                        <div class="user-item-content">
+                            <div class="user-avatar">S</div>
+                            <span class="user-name">Sarah</span>
+                            <span class="user-count">2</span>
+                        </div>
+                    </li>
+                    <li class="filter-item user-filter-item" data-user="Alex">
+                        <div class="user-item-content">
+                            <div class="user-avatar">A</div>
+                            <span class="user-name">Alex</span>
+                            <span class="user-count">1</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </aside>
 
         <!-- Content Area -->
         <div class="content">
             <div class="content-header">
                 <h1 class="content-title" id="recallCount">12 Recalls</h1>
+                <div class="header-actions">
+                    <button class="bulk-select-toggle" id="selectToggleBtn">Select</button>
+                </div>
+            </div>
+
+            <!-- Bulk Actions Toolbar (hidden by default) -->
+            <div class="bulk-action-toolbar" id="bulkActionsToolbar">
+                <div class="bulk-toolbar-content">
+                    <div class="bulk-toolbar-left">
+                        <span class="bulk-selected-count" id="selectedCount">0 selected</span>
+                        <button class="bulk-select-all" id="selectAllBtn">Select All</button>
+                        <button class="bulk-deselect-all" id="deselectAllBtn" style="display: none;">Deselect All</button>
+                    </div>
+                    <div class="bulk-toolbar-right">
+                        <button class="bulk-action-btn bulk-favorite-btn" id="bulkFavoriteBtn" disabled>
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                            Add to Favorites
+                        </button>
+                        <button class="bulk-action-btn bulk-archive-btn" id="bulkArchiveBtn" disabled>
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"/>
+                                <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            Move to Archive
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Cards Grid -->
             <div class="cards-grid">
                 <div class="card" data-id="1">
+                    <div class="card-select-checkbox" style="display: none;">
+                        <input type="checkbox" class="card-checkbox" data-card-id="1">
+                    </div>
                     <button class="favorite-btn">
                         <svg class="favorite-icon" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -2040,6 +1794,9 @@
                 </div>
 
                 <div class="card" data-id="2">
+                    <div class="card-select-checkbox" style="display: none;">
+                        <input type="checkbox" class="card-checkbox" data-card-id="2">
+                    </div>
                     <button class="favorite-btn active">
                         <svg class="favorite-icon" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -2049,7 +1806,7 @@
                     <div class="card-content">
                         <div class="card-meta">
                             <span class="date">July 29, 2025</span>
-                            <span class="user">Added by Rahul</span>
+                            <span class="user">Added by Sarah</span>
                         </div>
                         <div class="card-notes">User engagement analytics dashboard showing interesting patterns in user behavior.</div>
                         <div class="card-tags">
@@ -2061,6 +1818,9 @@
                 </div>
 
                 <div class="card" data-id="3">
+                    <div class="card-select-checkbox" style="display: none;">
+                        <input type="checkbox" class="card-checkbox" data-card-id="3">
+                    </div>
                     <button class="favorite-btn">
                         <svg class="favorite-icon" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -2082,6 +1842,9 @@
                 </div>
 
                 <div class="card" data-id="4">
+                    <div class="card-select-checkbox" style="display: none;">
+                        <input type="checkbox" class="card-checkbox" data-card-id="4">
+                    </div>
                     <button class="favorite-btn">
                         <svg class="favorite-icon" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -2091,7 +1854,7 @@
                     <div class="card-content">
                         <div class="card-meta">
                             <span class="date">July 27, 2025</span>
-                            <span class="user">Added by Rahul</span>
+                            <span class="user">Added by Alex</span>
                         </div>
                         <div class="card-notes">Design inspiration for landing page. Clean layout with great color palette and typography choices.</div>
                         <div class="card-tags">
@@ -2103,6 +1866,9 @@
                 </div>
 
                 <div class="card" data-id="5">
+                    <div class="card-select-checkbox" style="display: none;">
+                        <input type="checkbox" class="card-checkbox" data-card-id="5">
+                    </div>
                     <button class="favorite-btn">
                         <svg class="favorite-icon" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -2112,7 +1878,7 @@
                     <div class="card-content">
                         <div class="card-meta">
                             <span class="date">July 26, 2025</span>
-                            <span class="user">Added by Rahul</span>
+                            <span class="user">Added by Sarah</span>
                         </div>
                         <div class="card-notes">Database optimization techniques for better performance in production environments.</div>
                         <div class="card-tags">
@@ -2124,6 +1890,9 @@
                 </div>
 
                 <div class="card" data-id="6">
+                    <div class="card-select-checkbox" style="display: none;">
+                        <input type="checkbox" class="card-checkbox" data-card-id="6">
+                    </div>
                     <button class="favorite-btn active">
                         <svg class="favorite-icon" viewBox="0 0 20 20" fill="currentColor">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -2149,11 +1918,10 @@
 
     <!-- Floating Action Button -->
     <button class="fab" id="captureBtn" title="Capture Screenshot">
-        <svg class="fab-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 9a3 3 0 100 6 3 3 0 000-6z"/>
-            <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h6a1 1 0 100-2H9zM4 5a2 2 0 012-2h1a1 1 0 000 2v1H6a1 1 0 00-1 1v11a1 1 0 001 1h12a1 1 0 001-1V7a1 1 0 00-1-1h-1V5a1 1 0 000-2h1a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" clip-rule="evenodd"/>
-            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" fill="none"/>
-            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+        <svg class="fab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+            <path d="M7 9h.01"/>
         </svg>
     </button>
 
@@ -2298,6 +2066,21 @@
                 </h3>
                 <div class="related-cards" id="relatedCards">
                     <!-- Related cards will be populated here -->
+                    <div class="related-card">
+                        <div class="related-card-image">[Screenshot]</div>
+                        <div class="related-card-date">2 days ago</div>
+                        <div class="related-card-notes">Similar debugging session with React components...</div>
+                    </div>
+                    <div class="related-card">
+                        <div class="related-card-image">[Screenshot]</div>
+                        <div class="related-card-date">1 week ago</div>
+                        <div class="related-card-notes">API integration with similar error patterns...</div>
+                    </div>
+                    <div class="related-card">
+                        <div class="related-card-image">[Screenshot]</div>
+                        <div class="related-card-date">2 weeks ago</div>
+                        <div class="related-card-notes">Console debugging techniques for state management...</div>
+                    </div>
                 </div>
             </div>
             
@@ -2343,7 +2126,7 @@
     <!-- Capture Modal -->
     <div class="modal capture-modal" id="captureModal">
         <div class="modal-content">
-            <div class="processing-overlay" id="processingOverlay">
+            <div class="processing-overlay" id="processingOverlay" style="display: none;">
                 <div class="processing-spinner"></div>
                 <div class="processing-text">
                     <div>Capturing screenshot...</div>
@@ -2423,11 +2206,11 @@
             
             <div class="capture-actions">
                 <button class="cancel-btn" id="cancelCaptureBtn">Cancel</button>
-                <button class="save-btn" id="saveToCognispaceBtn">
+                <button class="save-btn" id="saveToRecallBtn">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                     </svg>
-                    Save to CogniSpace
+                    Save to Recall
                 </button>
             </div>
         </div>
@@ -2453,10 +2236,15 @@
 
             let currentNotes = [...sampleNotes];
             let currentTags = [];
+            let captureNotes = [];
+            let captureTags = [];
 
             // DOM elements
             const modal = document.getElementById('cardModal');
+            const captureModal = document.getElementById('captureModal');
+            const processingOverlay = document.getElementById('processingOverlay');
             const modalClose = document.getElementById('modalClose');
+            const captureModalClose = document.getElementById('captureModalClose');
             const modalDate = document.getElementById('modalDate');
             const modalUser = document.getElementById('modalUser');
             const modalNotesList = document.getElementById('modalNotesList');
@@ -2465,138 +2253,262 @@
             const addTagBtn = document.getElementById('addTagBtn');
             const relatedCards = document.getElementById('relatedCards');
             const captureBtn = document.getElementById('captureBtn');
+            
+            // Capture modal elements
+            const screenshotCanvas = document.getElementById('screenshotCanvas');
+            const captureImage = document.getElementById('captureImage');
+            const captureNotesList = document.getElementById('captureNotesList');
+            const captureTagsEl = document.getElementById('captureTags');
+            const captureDate = document.getElementById('captureDate');
+            const addCaptureNoteBtn = document.getElementById('addCaptureNoteBtn');
+            const addCaptureTagBtn = document.getElementById('addCaptureTagBtn');
+            const cancelCaptureBtn = document.getElementById('cancelCaptureBtn');
+            const saveToRecallBtn = document.getElementById('saveToRecallBtn');
+            const aiTagSuggestionsText = document.getElementById('aiTagSuggestionsText');
+            const aiNoteSuggestionsText = document.getElementById('aiNoteSuggestionsText');
 
-            // Render functions
-            function renderNotes(notes) {
-                modalNotesList.innerHTML = '';
-                notes.forEach((note, index) => {
-                    const noteItem = document.createElement('div');
-                    noteItem.className = 'note-item';
-                    noteItem.innerHTML = `
+            // Screenshot capture function
+            async function captureScreenshot() {
+                try {
+                    captureModal.classList.add('show');
+                    processingOverlay.style.display = 'flex';
+                    
+                    // Set current date
+                    captureDate.textContent = new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+
+                    // Simulate screenshot capture
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Create a mock screenshot
+                    const canvas = screenshotCanvas;
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 800;
+                    canvas.height = 600;
+                    
+                    // Create gradient background
+                    const gradient = ctx.createLinearGradient(0, 0, 800, 600);
+                    gradient.addColorStop(0, '#667eea');
+                    gradient.addColorStop(1, '#764ba2');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, 800, 600);
+                    
+                    // Add some mock content
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 32px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Screenshot Captured', 400, 250);
+                    
+                    ctx.font = '18px Arial';
+                    ctx.fillText('CogniSpace AI is analyzing this content...', 400, 300);
+                    
+                    // Add some mock UI elements
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                    ctx.fillRect(50, 100, 700, 80);
+                    ctx.fillRect(50, 200, 300, 200);
+                    ctx.fillRect(400, 200, 350, 200);
+                    
+                    // Simulate AI processing
+                    processingOverlay.querySelector('.processing-text').innerHTML = `
+                        <div>Analyzing screenshot content...</div>
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">AI is extracting insights</div>
+                    `;
+
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    // Hide processing overlay
+                    processingOverlay.style.display = 'none';
+                    
+                    // Update AI suggestions
+                    aiTagSuggestionsText.innerHTML = `
+                        <strong>Suggested tags:</strong> development, terminal, npm, package-manager, debugging, command-line, node.js
+                    `;
+                    
+                    aiNoteSuggestionsText.innerHTML = `
+                        <strong>Key insights:</strong><br>
+                        • Terminal window showing npm installation process<br>
+                        • Package manager command execution in progress<br>
+                        • Development environment setup visible<br>
+                        • Consider documenting successful installation steps
+                    `;
+                    
+                    // Add default AI-generated notes with variety
+                    const aiNoteOptions = [
+                        [
+                            { text: "Screenshot captured from application interface", type: "system" },
+                            { text: "UI elements and layout structure analyzed", type: "system" },
+                            { text: "Detected form inputs and interactive components", type: "system" },
+                            { text: "Consider documenting user interaction patterns", type: "manual" }
+                        ],
+                        [
+                            { text: "Web page content captured and processed", type: "system" },
+                            { text: "Text content and visual hierarchy identified", type: "system" },
+                            { text: "Color scheme and design patterns noted", type: "system" },
+                            { text: "Good reference for design inspiration", type: "manual" }
+                        ],
+                        [
+                            { text: "Application state captured at specific moment", type: "system" },
+                            { text: "Data visualization elements detected", type: "system" },
+                            { text: "User workflow context preserved", type: "system" },
+                            { text: "Useful for troubleshooting and documentation", type: "manual" }
+                        ],
+                        [
+                            { text: "Interface screenshot successfully processed", type: "system" },
+                            { text: "Navigation elements and menu structure mapped", type: "system" },
+                            { text: "Content organization patterns identified", type: "system" },
+                            { text: "Remember to add specific context about the task", type: "manual" }
+                        ]
+                    ];
+                    
+                    // Randomly select one set of AI notes
+                    const randomIndex = Math.floor(Math.random() * aiNoteOptions.length);
+                    captureNotes = [...aiNoteOptions[randomIndex]];
+                    
+                    // Add varied AI-suggested tags
+                    const aiTagOptions = [
+                        ['screenshot', 'ui', 'development', 'interface'],
+                        ['capture', 'design', 'layout', 'web'],
+                        ['app', 'workflow', 'user-experience', 'documentation'],
+                        ['interface', 'analysis', 'reference', 'visual']
+                    ];
+                    
+                    // Use the same random index for consistency
+                    captureTags = [...aiTagOptions[randomIndex]];
+                    
+                    updateCaptureNotesList();
+                    updateCaptureTagsList();
+                    
+                } catch (error) {
+                    console.error('Screenshot capture failed:', error);
+                    processingOverlay.style.display = 'none';
+                    alert('Screenshot capture failed. Please try again.');
+                }
+            }
+
+            function updateCaptureNotesList() {
+                captureNotesList.innerHTML = captureNotes.map((note, index) => `
+                    <div class="note-item">
                         <svg class="note-icon ${note.type}" viewBox="0 0 20 20" fill="currentColor">
                             ${note.type === 'system' ? 
-                                '<path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />' :
-                                '<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />'
+                                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />' :
+                                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />'
                             }
                         </svg>
-                        <div class="note-text">${note.text}</div>
+                        <span class="note-text">${note.text}</span>
                         <div class="note-actions">
-                            <button class="note-action" onclick="editNote(${index})">
+                            <button class="note-action" onclick="removeCaptureNote(${index})">
                                 <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                </svg>
-                            </button>
-                            <button class="note-action" onclick="deleteNote(${index})">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </button>
                         </div>
-                    `;
-                    modalNotesList.appendChild(noteItem);
-                });
+                    </div>
+                `).join('');
             }
 
-            function renderTags(tags) {
-                modalTags.innerHTML = '';
-                tags.forEach((tag, index) => {
-                    const tagElement = document.createElement('span');
-                    tagElement.className = 'tag-item';
-                    tagElement.innerHTML = `${tag} <button onclick="deleteTag(${index})" style="background: none; border: none; margin-left: 4px; cursor: pointer;">×</button>`;
-                    modalTags.appendChild(tagElement);
-                });
+            function updateCaptureTagsList() {
+                captureTagsEl.innerHTML = captureTags.map((tag, index) => `
+                    <span class="tag-item active removable-tag" onclick="removeCaptureTag(${index})">
+                        ${tag}
+                        <svg class="tag-remove-icon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                `).join('');
             }
 
-            function renderRelatedCards(cards) {
-                relatedCards.innerHTML = '';
-                cards.forEach(card => {
-                    const cardElement = document.createElement('div');
-                    cardElement.className = 'related-card';
-                    cardElement.innerHTML = `
+            window.removeCaptureNote = function(index) {
+                captureNotes.splice(index, 1);
+                updateCaptureNotesList();
+            };
+
+            window.removeCaptureTag = function(index) {
+                captureTags.splice(index, 1);
+                updateCaptureTagsList();
+            };
+
+            // Modal functions
+            function updateNotesList() {
+                modalNotesList.innerHTML = currentNotes.map((note, index) => `
+                    <div class="note-item">
+                        <svg class="note-icon ${note.type}" viewBox="0 0 20 20" fill="currentColor">
+                            ${note.type === 'system' ? 
+                                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />' :
+                                '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />'
+                            }
+                        </svg>
+                        <span class="note-text">${note.text}</span>
+                        <div class="note-actions">
+                            <button class="note-action" onclick="removeNote(${index})">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function updateTagsList() {
+                modalTags.innerHTML = currentTags.map((tag, index) => `
+                    <span class="tag-item active removable-tag" onclick="removeTag(${index})">
+                        ${tag}
+                        <svg class="tag-remove-icon" width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                `).join('');
+            }
+
+            function updateRelatedCards() {
+                relatedCards.innerHTML = relatedCardsData.map(card => `
+                    <div class="related-card">
                         <div class="related-card-image">[Screenshot]</div>
                         <div class="related-card-date">${card.date}</div>
                         <div class="related-card-notes">${card.notes}</div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;">
+                        <div class="card-tags">
                             ${card.tags.map(tag => `<span class="card-tag">${tag}</span>`).join('')}
                         </div>
-                    `;
-                    relatedCards.appendChild(cardElement);
-                });
+                    </div>
+                `).join('');
             }
 
-            // Note and tag management
-            window.editNote = function(index) {
-                const newText = prompt('Edit note:', currentNotes[index].text);
-                if (newText && newText.trim()) {
-                    currentNotes[index].text = newText.trim();
-                    renderNotes(currentNotes);
-                }
+            // Global functions for removing notes and tags
+            window.removeNote = function(index) {
+                currentNotes.splice(index, 1);
+                updateNotesList();
             };
 
-            window.deleteNote = function(index) {
-                if (confirm('Delete this note?')) {
-                    currentNotes.splice(index, 1);
-                    renderNotes(currentNotes);
-                }
-            };
-
-            window.deleteTag = function(index) {
+            window.removeTag = function(index) {
                 currentTags.splice(index, 1);
-                renderTags(currentTags);
+                updateTagsList();
             };
 
             // Event listeners
-            addNoteBtn.addEventListener('click', function() {
-                const noteText = prompt('Enter new note:');
-                if (noteText && noteText.trim()) {
-                    currentNotes.push({ text: noteText.trim(), type: 'manual' });
-                    renderNotes(currentNotes);
-                }
-            });
-
-            addTagBtn.addEventListener('click', function() {
-                const tagText = prompt('Enter new tag:');
-                if (tagText && tagText.trim()) {
-                    const newTag = tagText.trim().toLowerCase();
-                    if (!currentTags.includes(newTag)) {
-                        currentTags.push(newTag);
-                        renderTags(currentTags);
-                    }
-                }
-            });
-
-            // Card click handlers
             document.querySelectorAll('.card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    if (e.target.closest('.favorite-btn')) return;
-
-                    modalDate.textContent = card.querySelector('.date').textContent;
-                    const userText = card.querySelector('.user').textContent;
-                    modalUser.textContent = userText.replace('Added by ', '');
+                card.addEventListener('click', function() {
+                    const cardId = this.getAttribute('data-id');
                     
-                    currentTags = [];
-                    card.querySelectorAll('.card-tag').forEach(tag => {
-                        currentTags.push(tag.textContent);
-                    });
+                    // Populate modal with card data
+                    modalDate.textContent = this.querySelector('.date').textContent;
+                    modalUser.textContent = this.querySelector('.user').textContent;
                     
-                    renderNotes(currentNotes);
-                    renderTags(currentTags);
-                    renderRelatedCards(relatedCardsData);
-                    initializeComments();
+                    // Reset modal data
+                    currentNotes = [...sampleNotes];
+                    currentTags = ['cli', 'npm', 'error'];
+                    
+                    updateNotesList();
+                    updateTagsList();
+                    updateRelatedCards();
                     
                     modal.classList.add('show');
                 });
             });
 
-            // Favorite button handlers
-            document.querySelectorAll('.favorite-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    btn.classList.toggle('active');
-                });
-            });
-
-            // Modal close handlers
+            // Modal close events
             modalClose.addEventListener('click', function() {
                 modal.classList.remove('show');
             });
@@ -2607,16 +2519,196 @@
                 }
             });
 
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modal.classList.contains('show')) {
+            // Capture modal close events
+            captureModalClose.addEventListener('click', function() {
+                captureModal.classList.remove('show');
+            });
+
+            captureModal.addEventListener('click', function(e) {
+                if (e.target === captureModal) {
+                    captureModal.classList.remove('show');
+                }
+            });
+
+            // Add note functionality
+            addNoteBtn.addEventListener('click', function() {
+                const noteText = prompt('Enter a new note:');
+                if (noteText) {
+                    currentNotes.push({ text: noteText, type: 'manual' });
+                    updateNotesList();
+                }
+            });
+
+            // Add tag functionality
+            addTagBtn.addEventListener('click', function() {
+                const tagText = prompt('Enter a new tag:');
+                if (tagText) {
+                    currentTags.push(tagText);
+                    updateTagsList();
+                }
+            });
+
+            // Capture modal functionality
+            addCaptureNoteBtn.addEventListener('click', function() {
+                const noteText = prompt('Enter a new note:');
+                if (noteText) {
+                    captureNotes.push({ text: noteText, type: 'manual' });
+                    updateCaptureNotesList();
+                }
+            });
+
+            addCaptureTagBtn.addEventListener('click', function() {
+                const tagText = prompt('Enter a new tag:');
+                if (tagText) {
+                    captureTags.push(tagText);
+                    updateCaptureTagsList();
+                }
+            });
+
+            cancelCaptureBtn.addEventListener('click', function() {
+                captureModal.classList.remove('show');
+            });
+
+            saveToRecallBtn.addEventListener('click', function() {
+                alert('Saved to Recall! (This is a demo)');
+                captureModal.classList.remove('show');
+            });
+
+            // Favorite buttons
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('active');
+                });
+            });
+
+            // Modal favorite button
+            const modalFavoriteBtn = document.getElementById('modalFavoriteBtn');
+            modalFavoriteBtn.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+
+            // Share functionality
+            const shareBtn = document.getElementById('shareBtn');
+            const shareDropdown = document.getElementById('shareDropdown');
+
+            shareBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                shareDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function() {
+                shareDropdown.classList.remove('show');
+            });
+
+            document.querySelectorAll('.share-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const shareType = this.getAttribute('data-type');
+                    
+                    switch(shareType) {
+                        case 'link':
+                            navigator.clipboard.writeText(window.location.href).then(() => {
+                                alert('Link copied to clipboard!');
+                            });
+                            break;
+                        case 'email':
+                            window.location.href = `mailto:?subject=Check out this recall&body=${encodeURIComponent(window.location.href)}`;
+                            break;
+                        case 'slack':
+                            alert('Slack integration would be implemented here');
+                            break;
+                    }
+                    
+                    shareDropdown.classList.remove('show');
+                });
+            });
+
+            // Comments functionality
+            const commentInput = document.getElementById('commentInput');
+            const submitCommentBtn = document.getElementById('submitCommentBtn');
+            const commentsList = document.getElementById('commentsList');
+            const commentCount = document.getElementById('commentCount');
+
+            let commentsData = [
+                {
+                    author: 'Sarah Chen',
+                    text: 'This is really helpful! I encountered a similar issue last week. Thanks for documenting this.',
+                    time: '2 hours ago'
+                },
+                {
+                    author: 'Mike Johnson', 
+                    text: 'Great find! Have you tried the alternative approach using npm ci instead?',
+                    time: '5 hours ago'
+                }
+            ];
+
+            function updateCommentsList() {
+                commentsList.innerHTML = commentsData.map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-avatar">
+                            <svg width="32" height="32" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <span class="comment-author">${comment.author}</span>
+                                <span class="comment-time">${comment.time}</span>
+                            </div>
+                            <div class="comment-text">${comment.text}</div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                commentCount.textContent = commentsData.length;
+            }
+
+            submitCommentBtn.addEventListener('click', function() {
+                const commentText = commentInput.value.trim();
+                if (commentText) {
+                    commentsData.unshift({
+                        author: 'You',
+                        text: commentText,
+                        time: 'just now'
+                    });
+                    
+                    commentInput.value = '';
+                    updateCommentsList();
+                }
+            });
+
+            commentInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    submitCommentBtn.click();
+                }
+            });
+
+            // Initialize comments
+            updateCommentsList();
+
+            // Archive button
+            document.getElementById('archiveBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to archive this recall?')) {
+                    alert('Recall archived! (This is a demo)');
                     modal.classList.remove('show');
                 }
             });
 
+            // Update recall count
+            function updateRecallCount() {
+                const recallCountElement = document.getElementById('recallCount');
+                const cards = document.querySelectorAll('.card');
+                const count = cards.length;
+                
+                if (recallCountElement) {
+                    recallCountElement.textContent = `${count} Recall${count !== 1 ? 's' : ''}`;
+                }
+            }
+
             // Capture button
-            captureBtn.addEventListener('click', function() {
-                alert('Capture functionality would be implemented here!');
-            });
+            captureBtn.addEventListener('click', captureScreenshot);
 
             // Filter handlers
             document.querySelectorAll('.filter-item').forEach(item => {
@@ -2624,8 +2716,50 @@
                     const parent = item.parentElement;
                     parent.querySelectorAll('.filter-item').forEach(i => i.classList.remove('active'));
                     item.classList.add('active');
+                    
+                    // Handle user filtering
+                    if (item.classList.contains('user-filter-item')) {
+                        const selectedUser = item.getAttribute('data-user');
+                        filterCardsByUser(selectedUser);
+                    }
                 });
             });
+
+            // User filtering function
+            function filterCardsByUser(selectedUser) {
+                const cards = document.querySelectorAll('.card');
+                
+                cards.forEach(card => {
+                    if (selectedUser === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const userElement = card.querySelector('.user');
+                        const cardUser = userElement ? userElement.textContent.replace('Added by ', '') : '';
+                        
+                        if (cardUser === selectedUser) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+                
+                // Update the recall count based on visible cards
+                updateRecallCountForFilter();
+            }
+
+            // Update recall count for filtered results
+            function updateRecallCountForFilter() {
+                const visibleCards = document.querySelectorAll('.card[style*="block"], .card:not([style*="none"])');
+                const count = Array.from(visibleCards).filter(card => 
+                    !card.style.display || card.style.display !== 'none'
+                ).length;
+                
+                const recallCountElement = document.getElementById('recallCount');
+                if (recallCountElement) {
+                    recallCountElement.textContent = `${count} Recall${count !== 1 ? 's' : ''}`;
+                }
+            }
 
             document.querySelectorAll('.tag-item').forEach(item => {
                 item.addEventListener('click', function() {
@@ -2657,6 +2791,220 @@
                     alert('Please select both dates');
                 }
             });
+
+            // Update count on page load
+            updateRecallCount();
+
+            // Bulk Selection Functionality
+            let bulkSelectionMode = false;
+            let selectedCards = new Set();
+
+            const bulkToggleBtn = document.getElementById('selectToggleBtn');
+            const bulkToolbar = document.getElementById('bulkActionsToolbar');
+            const bulkSelectedCount = document.getElementById('selectedCount');
+            const bulkSelectAllBtn = document.getElementById('selectAllBtn');
+            const bulkDeselectAllBtn = document.getElementById('deselectAllBtn');
+            const bulkFavoriteBtn = document.getElementById('bulkFavoriteBtn');
+            const bulkArchiveBtn = document.getElementById('bulkArchiveBtn');
+            const cardCheckboxes = document.querySelectorAll('.card-checkbox');
+            const cardSelectCheckboxes = document.querySelectorAll('.card-select-checkbox');
+            const cards = document.querySelectorAll('.card');
+
+            // Toggle bulk selection mode
+            if (bulkToggleBtn) {
+                bulkToggleBtn.addEventListener('click', function() {
+                    bulkSelectionMode = !bulkSelectionMode;
+                    
+                    if (bulkSelectionMode) {
+                        // Enter selection mode
+                        this.textContent = 'Cancel';
+                        this.classList.add('active');
+                        if (bulkToolbar) bulkToolbar.classList.add('show');
+                        
+                        // Show all checkboxes
+                        cardSelectCheckboxes.forEach(checkbox => {
+                            checkbox.style.display = 'block';
+                        });
+                    } else {
+                        // Exit selection mode
+                        this.textContent = 'Select';
+                        this.classList.remove('active');
+                        if (bulkToolbar) bulkToolbar.classList.remove('show');
+                        
+                        // Hide all checkboxes and clear selections
+                        cardSelectCheckboxes.forEach(checkbox => {
+                            checkbox.style.display = 'none';
+                        });
+                        
+                        // Clear all selections
+                        selectedCards.clear();
+                        cardCheckboxes.forEach(checkbox => {
+                            checkbox.checked = false;
+                        });
+                        
+                        // Remove selected styling from cards
+                        cards.forEach(card => {
+                            card.classList.remove('selected');
+                        });
+                        
+                        updateBulkSelectionUI();
+                    }
+                });
+            }
+
+            // Handle individual card checkbox changes
+            cardCheckboxes.forEach(checkbox => {
+                // Prevent checkbox clicks from triggering card modal
+                checkbox.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                checkbox.addEventListener('change', function(e) {
+                    e.stopPropagation();
+                    const cardId = this.getAttribute('data-card-id');
+                    const card = document.querySelector(`[data-id="${cardId}"]`);
+                    
+                    if (this.checked) {
+                        selectedCards.add(cardId);
+                        card.classList.add('selected');
+                    } else {
+                        selectedCards.delete(cardId);
+                        card.classList.remove('selected');
+                    }
+                    
+                    updateBulkSelectionUI();
+                });
+            });
+
+            // Also prevent clicks on the checkbox container from bubbling
+            cardSelectCheckboxes.forEach(checkboxContainer => {
+                checkboxContainer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+
+            // Select all functionality
+            if (bulkSelectAllBtn) {
+                bulkSelectAllBtn.addEventListener('click', function() {
+                    cardCheckboxes.forEach(checkbox => {
+                        if (!checkbox.checked) {
+                            checkbox.checked = true;
+                            const cardId = checkbox.getAttribute('data-card-id');
+                            const card = document.querySelector(`[data-id="${cardId}"]`);
+                            selectedCards.add(cardId);
+                            card.classList.add('selected');
+                        }
+                    });
+                    updateBulkSelectionUI();
+                });
+            }
+
+            // Deselect all functionality
+            if (bulkDeselectAllBtn) {
+                bulkDeselectAllBtn.addEventListener('click', function() {
+                    cardCheckboxes.forEach(checkbox => {
+                        if (checkbox.checked) {
+                            checkbox.checked = false;
+                            const cardId = checkbox.getAttribute('data-card-id');
+                            const card = document.querySelector(`[data-id="${cardId}"]`);
+                            selectedCards.delete(cardId);
+                            card.classList.remove('selected');
+                        }
+                    });
+                    updateBulkSelectionUI();
+                });
+            }
+
+            // Add to favorites functionality
+            if (bulkFavoriteBtn) {
+                bulkFavoriteBtn.addEventListener('click', function() {
+                    if (selectedCards.size > 0) {
+                        selectedCards.forEach(cardId => {
+                            const card = document.querySelector(`[data-id="${cardId}"]`);
+                            const favoriteBtn = card.querySelector('.favorite-btn');
+                            if (favoriteBtn && !favoriteBtn.classList.contains('active')) {
+                                favoriteBtn.classList.add('active');
+                            }
+                        });
+                        
+                        // Show success message
+                        alert(`Added ${selectedCards.size} item(s) to favorites`);
+                        
+                        // Exit selection mode
+                        bulkToggleBtn.click();
+                    }
+                });
+            }
+
+            // Move to archive functionality
+            if (bulkArchiveBtn) {
+                bulkArchiveBtn.addEventListener('click', function() {
+                    if (selectedCards.size > 0) {
+                        const cardsToArchive = Array.from(selectedCards);
+                        
+                        // In a real application, you would send this data to a server
+                        // For now, we'll just simulate the archiving process
+                        cardsToArchive.forEach(cardId => {
+                            const card = document.querySelector(`[data-id="${cardId}"]`);
+                            // Add archived styling or hide the card
+                            card.style.opacity = '0.5';
+                            card.style.pointerEvents = 'none';
+                            
+                            // Add archived badge
+                            const archivedBadge = document.createElement('div');
+                            archivedBadge.className = 'archived-badge';
+                            archivedBadge.textContent = 'Archived';
+                            archivedBadge.style.cssText = `
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                background: rgba(0, 0, 0, 0.8);
+                                color: white;
+                                padding: 8px 16px;
+                                border-radius: 8px;
+                                font-size: 14px;
+                                font-weight: 600;
+                                z-index: 100;
+                            `;
+                            card.style.position = 'relative';
+                            card.appendChild(archivedBadge);
+                        });
+                        
+                        // Show success message
+                        alert(`Moved ${selectedCards.size} item(s) to archive`);
+                        
+                        // Exit selection mode
+                        if (bulkToggleBtn) bulkToggleBtn.click();
+                    }
+                });
+            }
+
+            // Update bulk selection UI
+            function updateBulkSelectionUI() {
+                const selectedCount = selectedCards.size;
+                const totalCards = cardCheckboxes.length;
+                
+                // Update selected count
+                bulkSelectedCount.textContent = `${selectedCount} selected`;
+                
+                // Enable/disable action buttons
+                const hasSelection = selectedCount > 0;
+                if (bulkFavoriteBtn) bulkFavoriteBtn.disabled = !hasSelection;
+                if (bulkArchiveBtn) bulkArchiveBtn.disabled = !hasSelection;
+                
+                // Update select/deselect all buttons
+                const allSelected = selectedCount === totalCards;
+                if (bulkSelectAllBtn) {
+                    bulkSelectAllBtn.style.display = allSelected ? 'none' : 'block';
+                }
+                if (bulkDeselectAllBtn) {
+                    bulkDeselectAllBtn.style.display = selectedCount > 0 ? 'block' : 'none';
+                }
+            }
+
+            // Initialize bulk selection UI
+            updateBulkSelectionUI();
         });
     </script>
 </body>
